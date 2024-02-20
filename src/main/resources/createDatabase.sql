@@ -49,16 +49,3 @@ CREATE TABLE IF NOT EXISTS `transaction_user_user` (
     FOREIGN KEY (sender_id) REFERENCES user (id),
     FOREIGN KEY (recipient_id) REFERENCES user (id)
 );
-
-CREATE TABLE IF NOT EXISTS `transaction_user_bankAccount` (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    description VARCHAR(255),
-    type VARCHAR(50),
-    date DATE,
-    amount DECIMAL(10,2),
-    fee DECIMAL(10,2),
-    sender_id INT NOT NULL,
-    recipient_id INT NOT NULL,
-    FOREIGN KEY (sender_id) REFERENCES user (id),
-    FOREIGN KEY (recipient_id) REFERENCES bankAccount (id)
-);
