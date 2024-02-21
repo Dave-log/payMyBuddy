@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     phone VARCHAR(50)
 );
 
-CREATE TABLE IF NOT EXISTS `userAccount` (
+CREATE TABLE IF NOT EXISTS `user_account` (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     email VARCHAR(100) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `user_user` (
     FOREIGN KEY (friend_id) REFERENCES user (id)
 );
 
-CREATE TABLE IF NOT EXISTS `bankAccount` (
+CREATE TABLE IF NOT EXISTS `bank_account` (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     accountNumber VARCHAR(50) NOT NULL,
@@ -37,11 +37,11 @@ CREATE TABLE IF NOT EXISTS `bankAccount` (
     FOREIGN KEY (user_id) REFERENCES user (id)
 );
 
-CREATE TABLE IF NOT EXISTS `transaction_user_user` (
+CREATE TABLE IF NOT EXISTS `transaction` (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     description VARCHAR(255),
     type VARCHAR(50),
-    date DATE,
+    date DATETIME DEFAULT CURRENT_TIMESTAMP,
     amount DECIMAL(10,2),
     fee DECIMAL(10,2),
     sender_id INT NOT NULL,
