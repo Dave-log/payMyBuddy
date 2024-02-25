@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS `transaction` (
     fee DECIMAL(10,2),
     sender_id INT NOT NULL,
     recipient_id INT NOT NULL,
+    recipient_type VARCHAR(50) NOT NULL,
     FOREIGN KEY (sender_id) REFERENCES user (id),
     FOREIGN KEY (recipient_id) REFERENCES user (id)
 );

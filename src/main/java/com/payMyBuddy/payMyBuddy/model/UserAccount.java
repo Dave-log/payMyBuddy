@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name="userAccount")
+@Table(name="user_account")
 public class UserAccount {
 
     @Id

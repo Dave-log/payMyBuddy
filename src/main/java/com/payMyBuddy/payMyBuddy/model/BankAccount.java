@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name="bankAccount")
+@DiscriminatorValue("BANK_ACCOUNT")
+@Table(name="bank_account")
 public class BankAccount {
 
     @Id

@@ -8,6 +8,7 @@ import java.util.List;
 
 @Data
 @Entity
+@DiscriminatorValue("USER")
 @Table(name = "user")
 public class User {
 
@@ -29,7 +30,10 @@ public class User {
     @JoinColumn(name = "id")
     private UserAccount userAccount;
 
-    //@ManyToMany
-    //@JoinColumn(name = "id")
-    //private List<User> users;
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Transaction> transactions;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name ="user_user", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "friend_id"))
+    private List<User> users;
 }
