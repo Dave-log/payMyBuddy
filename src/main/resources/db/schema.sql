@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS `user` (
     lastname VARCHAR(100) NOT NULL,
     birthdate DATE,
     address VARCHAR(255),
-    phone VARCHAR(50)
+    phone VARCHAR(50),
+    current_balance DECIMAL(10,2)
 );
 
 CREATE TABLE IF NOT EXISTS `user_account` (
@@ -21,9 +22,9 @@ CREATE TABLE IF NOT EXISTS `user_account` (
 
 CREATE TABLE IF NOT EXISTS `user_user` (
     user_id INT NOT NULL,
-    friend_id INT NOT NULL,
+    buddy_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user (id),
-    FOREIGN KEY (friend_id) REFERENCES user (id)
+    FOREIGN KEY (buddy_id) REFERENCES user (id)
 );
 
 CREATE TABLE IF NOT EXISTS `bank_account` (

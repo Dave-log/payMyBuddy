@@ -15,5 +15,7 @@ public class UserAccount {
     private int user_id;
     private String email;
     private String password;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
 }

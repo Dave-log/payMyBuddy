@@ -17,8 +17,10 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Enumerated(EnumType.STRING)
+    private TransactionType type;
+
     private String description;
-    private String type;
     private Date date;
     private BigDecimal amount;
     private BigDecimal fee;

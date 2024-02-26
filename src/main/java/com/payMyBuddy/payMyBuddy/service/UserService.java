@@ -16,11 +16,12 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    public Iterable<User> getUsers() {
-        return userRepository.findAll();
-    }
 
     public Optional<User> getUser(Integer id) {
         return userRepository.findById(id);
+    }
+
+    public Iterable<User> getUsers() {
+        return userRepository.findAll();
     }
 }
