@@ -1,5 +1,6 @@
 package com.payMyBuddy.payMyBuddy.configuration;
 
+import com.payMyBuddy.payMyBuddy.enums.RoleType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -17,26 +18,27 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SpringWebSecurity {
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/admin").hasRole("ADMIN");
-            auth.requestMatchers("/user").hasRole("USER");
-            auth.anyRequest().authenticated();}
-                ).formLogin(Customizer.withDefaults()).build();
-    }
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        return http.authorizeHttpRequests(auth -> {
+//            auth.requestMatchers("/admin").hasRole(RoleType.ADMIN.name());
+//            auth.requestMatchers("/user").hasRole(RoleType.USER.name());
+//            auth.anyRequest().authenticated();}
+//                ).formLogin(Customizer.withDefaults()).build();
+//    }
 
+    // TODO : Delete these false users created for testing !
     @Bean
     public UserDetailsService users() {
         UserDetails user = User.builder()
                 .username("user")
                 .password(encoder().encode("user"))
-                .roles("USER")
+                .roles(RoleType.USER.name())
                 .build();
         UserDetails admin = User.builder()
                 .username("admin")
                 .password(encoder().encode("admin"))
-                .roles("USER", "ADMIN")
+                .roles(RoleType.USER.name(), RoleType.ADMIN.name())
                 .build();
         return new InMemoryUserDetailsManager(user, admin);
     }

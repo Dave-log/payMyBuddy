@@ -1,5 +1,6 @@
 package com.payMyBuddy.payMyBuddy.model;
 
+import com.payMyBuddy.payMyBuddy.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.Data;
 

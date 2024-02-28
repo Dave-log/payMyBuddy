@@ -1,5 +1,7 @@
 package com.payMyBuddy.payMyBuddy.model;
 
+import com.payMyBuddy.payMyBuddy.enums.TransactionStatus;
+import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -10,6 +12,7 @@ import java.util.Date;
 
 @Data
 @Entity
+@DynamicUpdate
 @Table(name="transaction")
 public class Transaction {
 
@@ -20,10 +23,16 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionType type;
 
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus status;
+
     private String description;
     private Date date;
     private BigDecimal amount;
     private BigDecimal fee;
+
+    @Column(name = "fee_paid_by_sender")
+    private boolean feePaidBySender;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id")

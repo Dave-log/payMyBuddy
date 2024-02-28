@@ -1,4 +1,4 @@
-package com.payMyBuddy.payMyBuddy.model;
+package com.payMyBuddy.payMyBuddy.enums;
 
 public enum TransactionType {
     DEPOSIT,
