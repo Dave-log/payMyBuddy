@@ -1,49 +1,49 @@
 package com.payMyBuddy.payMyBuddy.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.payMyBuddy.payMyBuddy.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Data
-@Entity
+@EqualsAndHashCode(callSuper = true, exclude = { "bankAccounts"})
+@ToString(exclude = { "bankAccounts"})
 @DynamicUpdate
-@DiscriminatorValue("USER")
-@Table(name = "user")
-public class User {
+@Entity @Table(name = "user", uniqueConstraints = {@UniqueConstraint(name = "unique email", columnNames = {"email"})})
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+public class User extends Recipient {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private String username;
+    private String firstname;
+    private String lastname;
+    private String email;
+    private String password;
+    private BigDecimal balance;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
 
-    @Column(name="firstname")
-    private String firstName;
+    @OneToMany(targetEntity = BankAccount.class, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<BankAccount> bankAccounts = new ArrayList<>();
 
-    @Column(name="lastname")
-    private String lastName;
+    @OneToMany(targetEntity = Transaction.class, mappedBy = "sender")
+    private List<Transaction> transactions = new ArrayList<>();
 
-    private Date birthdate;
-    private String address;
-    private String phone;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "user_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "buddy_id") )
+    private Set<User> buddies = new HashSet<>();
 
-    @Column(name="current_balance")
-    private BigDecimal currentBalance;
-
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "id")
-    private UserAccount userAccount;
-
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<BankAccount> bankAccounts;
-
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Transaction> transactions;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name ="user_user", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "buddy_id"))
-    private List<User> buddies;
+    //private Date birthdate;
+    //private String address;
+    //private String phone;
 }

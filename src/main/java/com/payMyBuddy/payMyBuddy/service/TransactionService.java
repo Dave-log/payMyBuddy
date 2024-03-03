@@ -18,7 +18,6 @@ import java.util.Optional;
 
 @Service
 public class TransactionService {
-
     private final TransactionRepository transactionRepository;
     private final TransactionValidatorService validatorService;
     private final TransactionCalculatorService calculatorService;
@@ -34,10 +33,9 @@ public class TransactionService {
 
     @Transactional
     public void performTransaction(Transaction transaction) {
-
         // First we need to check if recipient is a BankAccount or a User in order to get the id.
         Object recipient = transaction.getRecipient();
-        int recipientId = recipient instanceof User ? ((User) recipient).getId() : ((BankAccount) recipient).getId();
+        long recipientId = recipient instanceof User ? ((User) recipient).getId() : ((BankAccount) recipient).getId();
 
         // Next we calculate the fee and adjust the amount in the case where it is the user who pays the fee.
         calculatorService.calculateFee(transaction);
@@ -59,7 +57,6 @@ public class TransactionService {
     }
 
     public void cancelTransaction(Transaction transaction) {
-
         Optional<Transaction> transactionOptional = transactionRepository.findById(transaction.getId());
         if (transactionOptional.isEmpty()) {
             throw new TransactionNotFoundException("Transaction not found with id: " + transaction.getId());
@@ -75,14 +72,13 @@ public class TransactionService {
     }
 
     private void changeTransactionStatus(Transaction transaction, TransactionStatus status) {
-
         transaction.setStatus(status);
         transactionRepository.save(transaction);
     }
 
     public Transaction saveTransaction(Transaction transaction) { return transactionRepository.save(transaction); }
 
-    public Optional<Transaction> getTransaction(Integer id) { return transactionRepository.findById(id); }
+    public Optional<Transaction> getTransaction(long id) { return transactionRepository.findById(id); }
 
     public Iterable<Transaction> getTransactions() { return transactionRepository.findAll(); }
 

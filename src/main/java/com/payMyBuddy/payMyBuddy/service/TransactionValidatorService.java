@@ -3,6 +3,7 @@ package com.payMyBuddy.payMyBuddy.service;
 import com.payMyBuddy.payMyBuddy.model.BankAccount;
 import com.payMyBuddy.payMyBuddy.model.Transaction;
 import com.payMyBuddy.payMyBuddy.model.User;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,6 @@ import java.util.Optional;
 
 @Service
 public class TransactionValidatorService {
-
     private final UserService userService;
     private final BankAccountService bankAccountService;
 
@@ -21,29 +21,30 @@ public class TransactionValidatorService {
         this.bankAccountService = bankAccountService;
     }
 
-    public boolean isValidTransaction(Transaction transaction, int recipientId, BigDecimal amount) {
-        Optional<User> userOptional = userService.getUser(transaction.getSender().getId());
+    @Transactional
+    public boolean isValidTransaction(Transaction transaction, long recipientId, BigDecimal amount) {
+        User user = userService.getUser(transaction.getSender().getId());
 
         return switch (transaction.getType()) {
             case DEPOSIT -> {
                 Optional<BankAccount> bankAccountOptional = bankAccountService.getBankAccount(recipientId);
-                yield userOptional.isPresent()
+                yield user != null
                         && bankAccountOptional.isPresent()
-                        && isBankAccountOwnedByUser(userOptional.get(), bankAccountOptional.get())
-                        && isSufficientBalance(userOptional.get(), amount);
+                        && isBankAccountOwnedByUser(user, bankAccountOptional.get())
+                        && isSufficientBalance(user, amount);
             }
             case WITHDRAWAL -> {
                 Optional<BankAccount> bankAccountOptional = bankAccountService.getBankAccount(recipientId);
-                yield userOptional.isPresent()
+                yield user != null
                         && bankAccountOptional.isPresent()
-                        && isBankAccountOwnedByUser(userOptional.get(), bankAccountOptional.get());
+                        && isBankAccountOwnedByUser(user, bankAccountOptional.get());
             }
             case TRANSFER -> {
-                Optional<User> buddyOptional = userService.getUser(recipientId);
-                yield userOptional.isPresent()
-                        && buddyOptional.isPresent()
-                        && isBuddyInUserFriendList(userOptional.get(), buddyOptional.get())
-                        && isSufficientBalance(userOptional.get(), amount);
+                User buddy = userService.getUser(recipientId);
+                yield user != null
+                        && buddy != null
+                        && isBuddyInUserFriendList(user, buddy)
+                        && isSufficientBalance(user, amount);
             }
         };
     }
@@ -57,6 +58,6 @@ public class TransactionValidatorService {
     }
 
     private boolean isSufficientBalance(User user, BigDecimal amount) {
-        return user.getCurrentBalance().compareTo(amount) >= 0;
+        return user.getBalance().compareTo(amount) >= 0;
     }
 }

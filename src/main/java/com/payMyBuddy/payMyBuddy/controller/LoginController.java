@@ -5,13 +5,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LoginController {
-
-    @GetMapping("/user")
+    @GetMapping("/userlog")
     public String helloUser() {
         return "Welcome, User";
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/adminlog")
     public String helloAdmin() {
         return "Welcome, Admin";
     }

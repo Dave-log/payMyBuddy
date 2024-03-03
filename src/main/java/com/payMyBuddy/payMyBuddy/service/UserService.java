@@ -2,6 +2,7 @@ package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +10,6 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
 
     @Autowired
@@ -19,8 +19,8 @@ public class UserService {
 
     public User saveUser(User user) { return userRepository.save(user); }
 
-    public Optional<User> getUser(Integer id) {
-        return userRepository.findById(id);
+    public User getUser(long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     public Iterable<User> getUsers() {

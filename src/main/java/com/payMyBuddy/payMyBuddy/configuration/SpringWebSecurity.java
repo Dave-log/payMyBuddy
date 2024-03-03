@@ -17,15 +17,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SpringWebSecurity {
-
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        return http.authorizeHttpRequests(auth -> {
-//            auth.requestMatchers("/admin").hasRole(RoleType.ADMIN.name());
-//            auth.requestMatchers("/user").hasRole(RoleType.USER.name());
-//            auth.anyRequest().authenticated();}
-//                ).formLogin(Customizer.withDefaults()).build();
-//    }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http.authorizeHttpRequests(auth -> {
+            auth.requestMatchers("/admin").hasRole(RoleType.ADMIN.name());
+            auth.requestMatchers("/user").hasRole(RoleType.USER.name());
+            auth.anyRequest().authenticated();}
+                ).formLogin(Customizer.withDefaults()).build();
+    }
 
     // TODO : Delete these false users created for testing !
     @Bean
