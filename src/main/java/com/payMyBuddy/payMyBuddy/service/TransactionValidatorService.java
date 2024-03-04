@@ -21,7 +21,6 @@ public class TransactionValidatorService {
         this.bankAccountService = bankAccountService;
     }
 
-    @Transactional
     public boolean isValidTransaction(Transaction transaction, long recipientId, BigDecimal amount) {
         User user = userService.getUser(transaction.getSender().getId());
 
@@ -31,19 +30,22 @@ public class TransactionValidatorService {
                 yield user != null
                         && bankAccountOptional.isPresent()
                         && isBankAccountOwnedByUser(user, bankAccountOptional.get())
+                        && isPositiveAmount(amount)
                         && isSufficientBalance(user, amount);
             }
             case WITHDRAWAL -> {
                 Optional<BankAccount> bankAccountOptional = bankAccountService.getBankAccount(recipientId);
                 yield user != null
                         && bankAccountOptional.isPresent()
-                        && isBankAccountOwnedByUser(user, bankAccountOptional.get());
+                        && isBankAccountOwnedByUser(user, bankAccountOptional.get())
+                        && isPositiveAmount(amount);
             }
             case TRANSFER -> {
                 User buddy = userService.getUser(recipientId);
                 yield user != null
                         && buddy != null
                         && isBuddyInUserFriendList(user, buddy)
+                        && isPositiveAmount(amount)
                         && isSufficientBalance(user, amount);
             }
         };
@@ -59,5 +61,9 @@ public class TransactionValidatorService {
 
     private boolean isSufficientBalance(User user, BigDecimal amount) {
         return user.getBalance().compareTo(amount) >= 0;
+    }
+
+    private boolean isPositiveAmount(BigDecimal amount) {
+        return amount.signum() > 0;
     }
 }

@@ -2,6 +2,7 @@ package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.constants.TransactionConstants;
 import com.payMyBuddy.payMyBuddy.enums.TransactionStatus;
+import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionException;
 import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionStatusException;
 import com.payMyBuddy.payMyBuddy.exceptions.TransactionNotFoundException;
@@ -34,8 +35,9 @@ public class TransactionService {
     @Transactional
     public void performTransaction(Transaction transaction) {
         // First we need to check if recipient is a BankAccount or a User in order to get the id.
-        Object recipient = transaction.getRecipient();
-        long recipientId = recipient instanceof User ? ((User) recipient).getId() : ((BankAccount) recipient).getId();
+        long recipientId = transaction.getType().equals(TransactionType.TRANSFER) ?
+                transaction.getRecipientUser().getId() :
+                transaction.getRecipientBank().getId();
 
         // Next we calculate the fee and adjust the amount in the case where it is the user who pays the fee.
         calculatorService.calculateFee(transaction);

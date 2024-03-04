@@ -40,9 +40,10 @@ CREATE TABLE IF NOT EXISTS `transaction` (
     amount DECIMAL(10,2),
     fee DECIMAL(10,2),
     sender_id BIGINT NOT NULL,
-    recipient_id BIGINT NOT NULL,
+    recipient_user_id BIGINT,
+    recipient_bank_id BIGINT,
     fee_payer BOOLEAN DEFAULT TRUE,
-    recipient_type VARCHAR(50) NOT NULL,
     FOREIGN KEY (sender_id) REFERENCES user (id),
-    FOREIGN KEY (recipient_id) REFERENCES user (id)
+    FOREIGN KEY (recipient_user_id) REFERENCES user (id),
+    FOREIGN KEY (recipient_bank_id) REFERENCES bank_account (id)
 );

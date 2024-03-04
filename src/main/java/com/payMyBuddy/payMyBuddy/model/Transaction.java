@@ -5,12 +5,16 @@ import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.hibernate.annotations.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
+@EqualsAndHashCode(exclude = {"sender", "recipientUser", "recipientBank"})
+@ToString(exclude = {"sender", "recipientUser", "recipientBank"})
 @DynamicUpdate
 @Entity @Table(name="transaction")
 public class Transaction {
@@ -38,7 +42,11 @@ public class Transaction {
     @JoinColumn(name = "sender_id")
     private User sender;
 
-    @ManyToOne
-    @JoinColumn(name = "recipient_id")
-    private Recipient recipient;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipient_user_id")
+    private User recipientUser;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipient_bank_id")
+    private BankAccount recipientBank;
 }
