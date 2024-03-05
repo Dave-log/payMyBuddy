@@ -14,8 +14,8 @@ public class BankAccountService {
         this.bankAccountRepository = bankAccountRepository;
     }
 
-    public Optional<BankAccount> getBankAccount(long id) {
-        return bankAccountRepository.findById(id);
+    public BankAccount getBankAccount(long id) {
+        return bankAccountRepository.findById(id).orElse(null);
     }
 
     public Iterable<BankAccount> getBankAccounts() {

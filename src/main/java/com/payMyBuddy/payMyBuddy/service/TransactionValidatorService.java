@@ -26,18 +26,18 @@ public class TransactionValidatorService {
 
         return switch (transaction.getType()) {
             case DEPOSIT -> {
-                Optional<BankAccount> bankAccountOptional = bankAccountService.getBankAccount(recipientId);
+                BankAccount bankAccount = bankAccountService.getBankAccount(recipientId);
                 yield user != null
-                        && bankAccountOptional.isPresent()
-                        && isBankAccountOwnedByUser(user, bankAccountOptional.get())
+                        && bankAccount != null
+                        && isBankAccountOwnedByUser(user, bankAccount)
                         && isPositiveAmount(amount)
                         && isSufficientBalance(user, amount);
             }
             case WITHDRAWAL -> {
-                Optional<BankAccount> bankAccountOptional = bankAccountService.getBankAccount(recipientId);
+                BankAccount bankAccount = bankAccountService.getBankAccount(recipientId);
                 yield user != null
-                        && bankAccountOptional.isPresent()
-                        && isBankAccountOwnedByUser(user, bankAccountOptional.get())
+                        && bankAccount != null
+                        && isBankAccountOwnedByUser(user, bankAccount)
                         && isPositiveAmount(amount);
             }
             case TRANSFER -> {

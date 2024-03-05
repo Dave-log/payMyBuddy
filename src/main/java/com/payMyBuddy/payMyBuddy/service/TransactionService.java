@@ -80,7 +80,7 @@ public class TransactionService {
 
     public Transaction saveTransaction(Transaction transaction) { return transactionRepository.save(transaction); }
 
-    public Optional<Transaction> getTransaction(long id) { return transactionRepository.findById(id); }
+    public Transaction getTransaction(long id) { return transactionRepository.findById(id).orElse(null); }
 
     public Iterable<Transaction> getTransactions() { return transactionRepository.findAll(); }
 
