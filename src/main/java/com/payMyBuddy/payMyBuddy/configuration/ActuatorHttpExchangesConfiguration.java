@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class ActuatorHttpExchangesConfiguration {
+
     @Bean
     public HttpExchangeRepository httpExchangeRepository() {return new InMemoryHttpExchangeRepository();}
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 @Entity @Table(name="bank_account")
 public class BankAccount {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 

@@ -1,8 +1,8 @@
-INSERT INTO `user` (firstname, lastname, username, email, password, role, balance)
+INSERT INTO `user` (firstname, lastname, email, password, role, balance)
 VALUES
-    ('John', 'Doe', 'johndoe', 'john@example.com', 'password', 'USER', 100.00),
-    ('Jane', 'Smith', 'janesmith', 'jane@example.com', 'password', 'USER', 150.00),
-    ('Alice', 'Johnson', 'alicejohnson', 'alice@example.com', 'password', 'USER', 200.00);
+    ('John', 'Doe', 'john@example.com', '$2y$10$.qkbukzzX21D.bqbI.B2R.tvWP90o/Y16QRWVLodw51BHft7ZWbc.', 'USER', 100.00),
+    ('Jane', 'Smith', 'jane@example.com', '$2y$10$.qkbukzzX21D.bqbI.B2R.tvWP90o/Y16QRWVLodw51BHft7ZWbc.', 'USER', 150.00),
+    ('Alice', 'Johnson', 'alice@example.com', '$2y$10$kp1V7UYDEWn17WSK16UcmOnFd1mPFVF6UkLrOOCGtf24HOYt8p1iC', 'ADMIN', 200.00);
 
 INSERT INTO `user_user` (user_id, buddy_id)
 VALUES

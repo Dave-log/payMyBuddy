@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS `user` (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     firstname VARCHAR(100) NOT NULL,
     lastname VARCHAR(100) NOT NULL,
-    username VARCHAR(50),
     email VARCHAR(100) NOT NULL,
     password VARCHAR(100) NOT NULL,
     role VARCHAR(50),

@@ -14,9 +14,9 @@ import java.util.*;
 @Entity @Table(name = "user", uniqueConstraints = {@UniqueConstraint(name = "unique email", columnNames = {"email"})})
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class User {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String username;
     private String firstname;
     private String lastname;
     private String email;

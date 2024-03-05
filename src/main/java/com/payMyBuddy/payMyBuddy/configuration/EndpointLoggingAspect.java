@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @Aspect
 @Component
 public class EndpointLoggingAspect {
+
     private static final Logger logger = LogManager.getLogger(EndpointLoggingAspect.class);
     private final ObjectWriter writer = new ObjectMapper().writerWithDefaultPrettyPrinter();
 

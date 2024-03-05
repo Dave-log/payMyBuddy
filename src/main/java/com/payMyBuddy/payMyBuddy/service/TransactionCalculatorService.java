@@ -12,6 +12,7 @@ import java.math.RoundingMode;
 
 @Service
 public class TransactionCalculatorService {
+
     private final UserService userService;
 
     @Autowired

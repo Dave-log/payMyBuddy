@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Service
 public class TransactionValidatorService {
+
     private final UserService userService;
     private final BankAccountService bankAccountService;
 

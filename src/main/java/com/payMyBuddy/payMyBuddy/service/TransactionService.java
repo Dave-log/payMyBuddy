@@ -19,6 +19,7 @@ import java.util.Optional;
 
 @Service
 public class TransactionService {
+
     private final TransactionRepository transactionRepository;
     private final TransactionValidatorService validatorService;
     private final TransactionCalculatorService calculatorService;

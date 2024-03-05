@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("bankAccount")
 public class BankAccountController {
+
     private final BankAccountService bankAccountService;
 
     public BankAccountController(BankAccountService bankAccountService) {
