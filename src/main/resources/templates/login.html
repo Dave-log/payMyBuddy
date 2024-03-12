@@ -1,10 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en-US">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Please Log In</title>
 </head>
-<body>
 
+<body>
+    <h1>Please Log In</h1>
+    <form th:action="@{/login}" method="post">
+        <div>
+            <label>
+                <input type="email" name="email" placeholder="email@example.com"/>
+            </label>
+        </div>
+        <div>
+            <label>
+                <input type="password" name="password" placeholder="********"/>
+            </label>
+        </div>
+        <input type="submit" value="Log in"/>
+    </form>
 </body>
 </html>

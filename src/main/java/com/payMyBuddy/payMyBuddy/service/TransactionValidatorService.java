@@ -3,12 +3,10 @@ package com.payMyBuddy.payMyBuddy.service;
 import com.payMyBuddy.payMyBuddy.model.BankAccount;
 import com.payMyBuddy.payMyBuddy.model.Transaction;
 import com.payMyBuddy.payMyBuddy.model.User;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 public class TransactionValidatorService {
@@ -23,7 +21,7 @@ public class TransactionValidatorService {
     }
 
     public boolean isValidTransaction(Transaction transaction, long recipientId, BigDecimal amount) {
-        User user = userService.getUser(transaction.getSender().getId());
+        User user = userService.get(transaction.getSender().getId());
 
         return switch (transaction.getType()) {
             case DEPOSIT -> {
@@ -42,7 +40,7 @@ public class TransactionValidatorService {
                         && isPositiveAmount(amount);
             }
             case TRANSFER -> {
-                User buddy = userService.getUser(recipientId);
+                User buddy = userService.get(recipientId);
                 yield user != null
                         && buddy != null
                         && isBuddyInUserFriendList(user, buddy)

@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS `user` (
     lastname VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     password VARCHAR(100) NOT NULL,
-    role VARCHAR(50),
-    balance DECIMAL(10,2),
+    role VARCHAR(50) DEFAULT 'USER',
+    balance DECIMAL(10,2) DEFAULT 0.00,
     UNIQUE (email)
 );
 
@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS `bank_account` (
 CREATE TABLE IF NOT EXISTS `transaction` (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     description VARCHAR(255),
-    type VARCHAR(50),
-    status VARCHAR(50),
+    type VARCHAR(50) NOT NULL,
+    status VARCHAR(50) DEFAULT 'PENDING',
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
     amount DECIMAL(10,2),
     fee DECIMAL(10,2),

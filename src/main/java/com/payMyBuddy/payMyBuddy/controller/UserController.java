@@ -3,15 +3,12 @@ package com.payMyBuddy.payMyBuddy.controller;
 import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("users")
 public class UserController {
 
     private final UserService userService;
@@ -23,7 +20,7 @@ public class UserController {
 
     @GetMapping("{id}")
     public User getUser(@PathVariable long id) {
-        return userService.getUser(id);
+        return userService.get(id);
     }
 
     @GetMapping("all")
@@ -33,6 +30,9 @@ public class UserController {
 
     @GetMapping("{id}/buddies")
     public Set<User> getUserBuddies(@PathVariable long id) {
-        return userService.getUser(id).getBuddies();
+        return userService.get(id).getBuddies();
     }
+
+    @PutMapping()
+    public User update(@RequestBody User user) { return userService.update(user); }
 }

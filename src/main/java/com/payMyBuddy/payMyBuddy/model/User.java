@@ -21,10 +21,10 @@ public class User {
     private String lastname;
     private String email;
     private String password;
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
-    private RoleType role;
+    private RoleType role = RoleType.USER;
 
     @OneToMany(targetEntity = BankAccount.class, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BankAccount> bankAccounts = new ArrayList<>();

@@ -46,10 +46,10 @@ public class TransactionCalculatorService {
             case TRANSFER -> {
                 sender.setBalance(senderBalance.subtract(amountPlusFee));
                 recipient.setBalance(recipient.getBalance().add(amountMinusFee));
-                userService.saveUser(recipient);
+                userService.update(recipient);
             }
         };
 
-        userService.saveUser(sender);
+        userService.update(sender);
     }
 }

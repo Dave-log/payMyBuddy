@@ -1,12 +1,11 @@
 package com.payMyBuddy.payMyBuddy.service;
 
+import com.payMyBuddy.payMyBuddy.exceptions.UserNotFoundException;
 import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -18,9 +17,14 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User saveUser(User user) { return userRepository.save(user); }
+    public void addUserToBuddyList(User user, String buddyEmail) {
 
-    public User getUser(long id) {
+        User buddyToAdd = userRepository.findByEmail(buddyEmail);
+
+        //if (buddyToAdd != null && userRepository.)
+    }
+
+    public User get(long id) {
         return userRepository.findById(id).orElse(null);
     }
 
@@ -28,7 +32,24 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void deleteUser(User user) {
+    public User update(User user) {
+        User userToUpdate = userRepository.findByEmail(user.getEmail());
+        if (userToUpdate != null) {
+            userToUpdate.setFirstname(user.getFirstname());
+            userToUpdate.setLastname(user.getLastname());
+            userToUpdate.setPassword(user.getPassword());
+            userToUpdate.setBalance(user.getBalance());
+            userToUpdate.setRole(user.getRole());
+            userToUpdate.setBankAccounts(user.getBankAccounts());
+            userToUpdate.setTransactions(user.getTransactions());
+            userToUpdate.setBuddies(user.getBuddies());
+            return userRepository.save(userToUpdate);
+        } else {
+            throw new UserNotFoundException("No user found with this email : " + user.getEmail());
+        }
+    }
+
+    public void delete(User user) {
         userRepository.delete(user);
     }
 }
