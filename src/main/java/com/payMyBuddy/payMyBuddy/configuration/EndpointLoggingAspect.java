@@ -39,7 +39,7 @@ public class EndpointLoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         String params = getRequestParams(request);
 
-        logger.info("Calling endpoint - URL: {}, Method: {}, Controller: {}, MethodName: {}, Params: {}", url, method, controller, methodName, params);
+        logger.info("\nCalling endpoint - URL: {}, Method: {}, Controller: {}, MethodName: {}, \nParams: {}", url, method, controller, methodName, params);
     }
 
     @AfterReturning(pointcut = "endpointMethods() && @annotation(org.springframework.web.bind.annotation.GetMapping)", returning = "response")

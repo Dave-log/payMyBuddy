@@ -20,7 +20,7 @@ public class UserController {
 
     @GetMapping("{id}")
     public User getUser(@PathVariable long id) {
-        return userService.get(id);
+        return userService.getUser(id);
     }
 
     @GetMapping("all")
@@ -30,9 +30,14 @@ public class UserController {
 
     @GetMapping("{id}/buddies")
     public Set<User> getUserBuddies(@PathVariable long id) {
-        return userService.get(id).getBuddies();
+        return userService.getUser(id).getBuddies();
     }
 
     @PutMapping()
     public User update(@RequestBody User user) { return userService.update(user); }
+
+    @PostMapping("addbuddy/{email}")
+    public void addBuddy(@PathVariable String email) {
+        userService.addBuddy(email);
+    }
 }

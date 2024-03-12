@@ -21,7 +21,7 @@ public class TransactionValidatorService {
     }
 
     public boolean isValidTransaction(Transaction transaction, long recipientId, BigDecimal amount) {
-        User user = userService.get(transaction.getSender().getId());
+        User user = userService.getUser(transaction.getSender().getId());
 
         return switch (transaction.getType()) {
             case DEPOSIT -> {
@@ -40,7 +40,7 @@ public class TransactionValidatorService {
                         && isPositiveAmount(amount);
             }
             case TRANSFER -> {
-                User buddy = userService.get(recipientId);
+                User buddy = userService.getUser(recipientId);
                 yield user != null
                         && buddy != null
                         && isBuddyInUserFriendList(user, buddy)

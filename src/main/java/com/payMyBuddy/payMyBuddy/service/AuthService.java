@@ -33,23 +33,4 @@ public class AuthService {
 
         userRepository.save(user);
     }
-
-    public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username;
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            Object principal = authentication.getPrincipal();
-
-            if (principal instanceof UserDetails userDetails) {
-                username = userDetails.getUsername();
-            } else {
-                username = principal.toString();
-            }
-
-            return userRepository.findByEmail(username);
-        } else {
-            throw new UserNotFoundException("User is not authenticated or does not exist");
-        }
-    }
 }
