@@ -45,11 +45,9 @@ public class BankAccountService {
         newBankAccount.setBankName(bankAccountRegisterDTO.bankName());
 
         currentUser.getBankAccounts().add(newBankAccount);
-        System.out.println("jusque là ça marche (add new BA to user BA list");
+
         bankAccountRepository.save(newBankAccount);
-        System.out.println("jusque là ça marche (save du BA dans BA repo");
         userService.update(currentUser);
-        System.out.println("jusque là ça marche (update du user");
     }
 
     @Transactional

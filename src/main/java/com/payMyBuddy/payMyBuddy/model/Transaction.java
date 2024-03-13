@@ -16,7 +16,8 @@ import java.util.Date;
 @Data
 @DynamicUpdate
 @Entity @Table(name="transaction")
-public class Transaction {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Transaction {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -44,15 +45,15 @@ public class Transaction {
     @JoinColumn(name = "sender_id")
     private User sender;
 
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipient_user_id")
-    private User recipientUser;
-
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipient_bank_id")
-    private BankAccount recipientBank;
+//    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+//    @JsonIdentityReference(alwaysAsId=true)
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "recipient_user_id")
+//    private User recipientUser;
+//
+//    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+//    @JsonIdentityReference(alwaysAsId=true)
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "recipient_bank_id")
+//    private BankAccount recipientBank;
 }

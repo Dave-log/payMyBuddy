@@ -2,6 +2,7 @@ package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.constants.TransactionConstants;
 import com.payMyBuddy.payMyBuddy.enums.TransactionType;
+import com.payMyBuddy.payMyBuddy.model.BuddyTransaction;
 import com.payMyBuddy.payMyBuddy.model.Transaction;
 import com.payMyBuddy.payMyBuddy.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class TransactionCalculatorService {
         User recipient = new User();
 
         if (transaction.getType().equals(TransactionType.TRANSFER)) {
-            recipient = transaction.getRecipientUser();
+            recipient = ((BuddyTransaction) transaction).getRecipientUser();
         }
 
         BigDecimal senderBalance = sender.getBalance();

@@ -6,9 +6,7 @@ import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionException;
 import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionStatusException;
 import com.payMyBuddy.payMyBuddy.exceptions.TransactionNotFoundException;
-import com.payMyBuddy.payMyBuddy.model.BankAccount;
-import com.payMyBuddy.payMyBuddy.model.Transaction;
-import com.payMyBuddy.payMyBuddy.model.User;
+import com.payMyBuddy.payMyBuddy.model.*;
 import com.payMyBuddy.payMyBuddy.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +35,8 @@ public class TransactionService {
     public void performTransaction(Transaction transaction) {
         // First we need to check if recipient is a BankAccount or a User in order to get the id.
         long recipientId = transaction.getType().equals(TransactionType.TRANSFER) ?
-                transaction.getRecipientUser().getId() :
-                transaction.getRecipientBank().getId();
+                ((BuddyTransaction) transaction).getRecipientUser().getId() :
+                ((BankTransaction) transaction).getRecipientBank().getId();
 
         // Next we calculate the fee and adjust the amount in the case where it is the user who pays the fee.
         calculatorService.calculateFee(transaction);
