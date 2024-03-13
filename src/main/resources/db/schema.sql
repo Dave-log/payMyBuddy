@@ -45,15 +45,15 @@ CREATE TABLE IF NOT EXISTS `transaction` (
 );
 
 CREATE TABLE IF NOT EXISTS `bank_transaction` (
-    transaction_id BIGINT NOT NULL,
-    recipient_bank_id BIGINT NOT NULL,
+    transaction_id BIGINT,
+    recipient_bank_id BIGINT,
     FOREIGN KEY (transaction_id) REFERENCES `transaction` (id),
     FOREIGN KEY (recipient_bank_id) REFERENCES `bank_account` (id)
 );
 
 CREATE TABLE IF NOT EXISTS `buddy_transaction` (
-    transaction_id BIGINT NOT NULL,
-    recipient_user_id BIGINT NOT NULL,
+    transaction_id BIGINT,
+    recipient_user_id BIGINT,
     FOREIGN KEY (transaction_id) REFERENCES `transaction` (id),
     FOREIGN KEY (recipient_user_id) REFERENCES `user` (id)
 );

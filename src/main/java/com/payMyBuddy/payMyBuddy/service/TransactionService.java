@@ -1,6 +1,7 @@
 package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.constants.TransactionConstants;
+import com.payMyBuddy.payMyBuddy.dto.BuddyTransactionRequestDTO;
 import com.payMyBuddy.payMyBuddy.enums.TransactionStatus;
 import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionException;
@@ -21,18 +22,41 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionValidatorService validatorService;
     private final TransactionCalculatorService calculatorService;
+    private final UserService userService;
 
     @Autowired
     public TransactionService(TransactionRepository transactionRepository,
                               TransactionValidatorService transactionValidator,
-                              TransactionCalculatorService calculatorService) {
+                              TransactionCalculatorService calculatorService,
+                              UserService userService) {
         this.transactionRepository = transactionRepository;
         this.validatorService = transactionValidator;
         this.calculatorService = calculatorService;
+        this.userService = userService;
     }
 
     @Transactional
-    public void performTransaction(Transaction transaction) {
+    public void makeTransfer(BuddyTransactionRequestDTO buddyTransactionRequestDTO) {
+        User currentUser = userService.getCurrentUser();
+        String recipientEmail = buddyTransactionRequestDTO.recipientEmail();
+        User recipientUser = userService.getUser(recipientEmail);
+
+        if (!currentUser.getBuddies().contains(recipientUser)) {
+            throw new InvalidTransactionException("Recipient user is not your buddy");
+        }
+
+        BuddyTransaction buddyTransaction = new BuddyTransaction();
+        buddyTransaction.setDescription(buddyTransactionRequestDTO.description());
+        buddyTransaction.setType(TransactionType.TRANSFER);
+        buddyTransaction.setSender(currentUser);
+        buddyTransaction.setRecipientUser(recipientUser);
+        buddyTransaction.setAmount(buddyTransactionRequestDTO.amount());
+        buddyTransaction.setFeePaidBySender(buddyTransactionRequestDTO.feePaidBySender());
+
+        performTransaction(buddyTransaction);
+    }
+
+    private void performTransaction(Transaction transaction) {
         // First we need to check if recipient is a BankAccount or a User in order to get the id.
         long recipientId = transaction.getType().equals(TransactionType.TRANSFER) ?
                 ((BuddyTransaction) transaction).getRecipientUser().getId() :

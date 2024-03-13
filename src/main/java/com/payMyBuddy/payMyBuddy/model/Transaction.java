@@ -19,7 +19,7 @@ import java.util.Date;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Transaction {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.TABLE)
     private long id;
 
     @Enumerated(EnumType.STRING)

@@ -39,6 +39,7 @@ public class SecurityConfigurer {
                     .requestMatchers(HttpMethod.DELETE, "/users/remove-buddy/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/bank-account/**").permitAll()
                     .requestMatchers(HttpMethod.DELETE, "/bank-account/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/transaction/transfer").permitAll()
                     .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
