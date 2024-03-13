@@ -1,12 +1,8 @@
 package com.payMyBuddy.payMyBuddy.service;
 
-import com.payMyBuddy.payMyBuddy.dto.RegisterDTO;
-import com.payMyBuddy.payMyBuddy.exceptions.UserNotFoundException;
+import com.payMyBuddy.payMyBuddy.dto.UserRegisterDTO;
 import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.repository.UserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +19,7 @@ public class AuthService {
 
     public boolean existsByEmail(String email) { return userRepository.existsByEmail(email); }
 
-    public void register(RegisterDTO registerDTO) {
+    public void register(UserRegisterDTO registerDTO) {
 
         User user = new User();
         user.setFirstname(registerDTO.firstName());

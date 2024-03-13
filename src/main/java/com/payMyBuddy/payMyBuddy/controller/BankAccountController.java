@@ -1,15 +1,13 @@
 package com.payMyBuddy.payMyBuddy.controller;
 
+import com.payMyBuddy.payMyBuddy.dto.BankAccountRegisterDTO;
 import com.payMyBuddy.payMyBuddy.model.BankAccount;
 import com.payMyBuddy.payMyBuddy.service.BankAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("bankAccount")
+@RequestMapping("bank-account")
 public class BankAccountController {
 
     private final BankAccountService bankAccountService;
@@ -24,4 +22,15 @@ public class BankAccountController {
 
     @GetMapping("all")
     public Iterable<BankAccount> getBankAccounts() { return bankAccountService.getBankAccounts(); }
+
+    @PostMapping("add")
+    public void addBankAccount(@RequestBody BankAccountRegisterDTO bankAccount) {
+        bankAccountService.addBankAccount(bankAccount);
+    }
+
+    @DeleteMapping("{iban}")
+    public void removeBankAccount(@PathVariable String iban) {
+        bankAccountService.removeBankAccount(iban);
+    }
+
 }

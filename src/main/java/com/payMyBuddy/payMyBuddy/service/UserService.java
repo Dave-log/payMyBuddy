@@ -8,7 +8,6 @@ import com.payMyBuddy.payMyBuddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,7 +27,6 @@ public class UserService {
 
         if (auth != null && auth.isAuthenticated()) {
             String email = auth.getName();
-            System.out.println("email of currentUser : " + email);
             return getUser(email);
         } else {
             throw new UserNotFoundException("User is not authenticated or does not exist");
@@ -36,11 +34,8 @@ public class UserService {
     }
 
     public void addBuddy(String buddyEmail) {
-        System.out.println("email avant instanciation des users : " + buddyEmail);
         User currentUser = getCurrentUser();
-        System.out.println("email après instanciation du currentUser : " + buddyEmail);
         User buddyToAdd = getUser(buddyEmail);
-        System.out.println("userService reached");
         if (currentUser.getBuddies().contains(buddyToAdd)) {
             throw new BuddyAlreadyInBuddyListException("Buddy already in buddy list (email provided: " + buddyEmail + ")");
         } else {
@@ -64,21 +59,14 @@ public class UserService {
 
     public User getUser(long id) {
         Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        } else {
-            throw new UserNotFoundException("User does not exist (id provided: " + id + ")");
-        }
+        return optionalUser
+                .orElseThrow(() -> new UserNotFoundException("User does not exist (id provided: " + id + ")"));
     }
 
     public User getUser(String email) {
-        System.out.println(email);
         Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        } else {
-            throw new UserNotFoundException("User does not exist (email provided: " + email + ")");
-        }
+        return optionalUser
+                .orElseThrow(() -> new UserNotFoundException("User does not exist (email provided: " + email + ")"));
     }
 
 
@@ -103,7 +91,7 @@ public class UserService {
         }
     }
 
-    public void delete(User user) {
-        userRepository.delete(user);
+    public void delete(long id) {
+        userRepository.delete(getUser(id));
     }
 }

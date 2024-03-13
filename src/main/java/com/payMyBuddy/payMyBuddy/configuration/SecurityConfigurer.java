@@ -1,5 +1,6 @@
 package com.payMyBuddy.payMyBuddy.configuration;
 
+import com.payMyBuddy.payMyBuddy.enums.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +35,10 @@ public class SecurityConfigurer {
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/error").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/users/addbuddy/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/users/add-buddy/**").permitAll()
+                    .requestMatchers(HttpMethod.DELETE, "/users/remove-buddy/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/bank-account/**").permitAll()
+                    .requestMatchers(HttpMethod.DELETE, "/bank-account/**").permitAll()
                     .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
@@ -59,11 +63,6 @@ public class SecurityConfigurer {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
             throws Exception {
-//        AuthenticationManagerBuilder authenticationManagerBuilder = http
-//                .getSharedObject(AuthenticationManagerBuilder.class);
-//        authenticationManagerBuilder.userDetailsService(userDetailsService)
-//                .passwordEncoder(bCryptPasswordEncoder);
-//        return authenticationManagerBuilder.build();
         return  config.getAuthenticationManager();
     }
 }

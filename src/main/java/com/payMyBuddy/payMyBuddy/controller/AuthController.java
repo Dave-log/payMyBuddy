@@ -1,6 +1,6 @@
 package com.payMyBuddy.payMyBuddy.controller;
 
-import com.payMyBuddy.payMyBuddy.dto.RegisterDTO;
+import com.payMyBuddy.payMyBuddy.dto.UserRegisterDTO;
 import com.payMyBuddy.payMyBuddy.service.AuthService;
 import com.payMyBuddy.payMyBuddy.service.UserService;
 import jakarta.transaction.Transactional;
@@ -37,7 +37,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @Transactional
-    public ResponseEntity<String> register(@RequestBody RegisterDTO registerDTO) {
+    public ResponseEntity<String> register(@RequestBody UserRegisterDTO registerDTO) {
 
         if (authService.existsByEmail(registerDTO.email())) {
             return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);

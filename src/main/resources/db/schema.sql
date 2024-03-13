@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `bank_account` (
     iban VARCHAR(50) NOT NULL,
     bic VARCHAR(50) NOT NULL,
     bank_name VARCHAR(100),
+    UNIQUE (iban),
     FOREIGN KEY (user_id) REFERENCES user (id)
 );
 
