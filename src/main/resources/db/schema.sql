@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `transaction` (
     description VARCHAR(255),
     type VARCHAR(50) NOT NULL,
     status VARCHAR(50) DEFAULT 'PENDING',
-    date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    date DATETIME DEFAULT NOW(),
     amount DECIMAL(10,2),
     fee DECIMAL(10,2),
     sender_id BIGINT NOT NULL,

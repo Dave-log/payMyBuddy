@@ -1,6 +1,7 @@
 package com.payMyBuddy.payMyBuddy.controller;
 
 import com.payMyBuddy.payMyBuddy.dto.UserRegisterDTO;
+import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.service.AuthService;
 import com.payMyBuddy.payMyBuddy.service.UserService;
 import jakarta.transaction.Transactional;
@@ -26,7 +27,7 @@ public class AuthController {
     @GetMapping("/login")
     public ResponseEntity<String> login() {
 
-        com.payMyBuddy.payMyBuddy.model.User user = userService.getCurrentUser();
+        User user = userService.getCurrentUser();
         if (user == null) {
             return new ResponseEntity<>("User is not authenticated or does not exist", HttpStatus.FORBIDDEN);
         } else {

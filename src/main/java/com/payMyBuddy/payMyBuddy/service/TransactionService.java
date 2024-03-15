@@ -1,9 +1,10 @@
 package com.payMyBuddy.payMyBuddy.service;
 
-import com.payMyBuddy.payMyBuddy.constants.TransactionConstants;
+import com.payMyBuddy.payMyBuddy.dto.BankTransactionRequestDTO;
 import com.payMyBuddy.payMyBuddy.dto.BuddyTransactionRequestDTO;
 import com.payMyBuddy.payMyBuddy.enums.TransactionStatus;
 import com.payMyBuddy.payMyBuddy.enums.TransactionType;
+import com.payMyBuddy.payMyBuddy.exceptions.BankAccountNotFoundException;
 import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionException;
 import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionStatusException;
 import com.payMyBuddy.payMyBuddy.exceptions.TransactionNotFoundException;
@@ -17,26 +18,29 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final TransactionValidatorService validatorService;
     private final TransactionCalculatorService calculatorService;
     private final UserService userService;
+    private final BankAccountService bankAccountService;
 
     @Autowired
     public TransactionService(TransactionRepository transactionRepository,
                               TransactionValidatorService transactionValidator,
                               TransactionCalculatorService calculatorService,
-                              UserService userService) {
+                              UserService userService,
+                              BankAccountService bankAccountService) {
         this.transactionRepository = transactionRepository;
         this.validatorService = transactionValidator;
         this.calculatorService = calculatorService;
         this.userService = userService;
+        this.bankAccountService = bankAccountService;
     }
 
-    @Transactional
-    public void makeTransfer(BuddyTransactionRequestDTO buddyTransactionRequestDTO) {
+    public void transfer(BuddyTransactionRequestDTO buddyTransactionRequestDTO) {
         User currentUser = userService.getCurrentUser();
         String recipientEmail = buddyTransactionRequestDTO.recipientEmail();
         User recipientUser = userService.getUser(recipientEmail);
@@ -54,6 +58,25 @@ public class TransactionService {
         buddyTransaction.setFeePaidBySender(buddyTransactionRequestDTO.feePaidBySender());
 
         performTransaction(buddyTransaction);
+    }
+
+    public void makeBankTransaction(BankTransactionRequestDTO bankTransactionRequestDTO) {
+        User currentUser = userService.getCurrentUser();
+        BankAccount bankAccount = bankAccountService.getBankAccount(bankTransactionRequestDTO.id());
+
+        if (!currentUser.getBankAccounts().contains(bankAccount)) {
+            throw new BankAccountNotFoundException("Recipient is not your bank account");
+        }
+
+        BankTransaction bankTransaction = new BankTransaction();
+        bankTransaction.setDescription(bankTransactionRequestDTO.description());
+        bankTransaction.setType(bankTransactionRequestDTO.type());
+        bankTransaction.setSender(currentUser);
+        bankTransaction.setRecipientBank(bankAccount);
+        bankTransaction.setAmount(bankTransactionRequestDTO.amount());
+        bankTransaction.setFeePaidBySender(bankTransactionRequestDTO.feePaidBySender());
+
+        performTransaction(bankTransaction);
     }
 
     private void performTransaction(Transaction transaction) {

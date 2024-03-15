@@ -25,7 +25,13 @@ public class BankAccountService {
     }
 
     public BankAccount getBankAccount(long id) {
-        return bankAccountRepository.findById(id).orElse(null);
+        return bankAccountRepository.findById(id)
+                .orElseThrow(() -> new BankAccountNotFoundException(" Bank account does not exist (id provided: " + id + ")"));
+    }
+
+    public BankAccount getBankAccount(String iban) {
+        return bankAccountRepository.findByIban(iban)
+                .orElseThrow(() -> new BankAccountNotFoundException(" Bank account does not exist (iban provided: " + iban + ")"));
     }
 
     public Iterable<BankAccount> getBankAccounts() {
@@ -50,14 +56,7 @@ public class BankAccountService {
         userService.update(currentUser);
     }
 
-    @Transactional
     public void removeBankAccount(String iban) {
-        Optional<BankAccount> optionalBankAccount = bankAccountRepository.findByIban(iban);
-
-        if (optionalBankAccount.isEmpty()) {
-            throw new BankAccountNotFoundException("Bank account not found (iban provided: " + iban + ")");
-        }
-
-        bankAccountRepository.delete(optionalBankAccount.get());
+        bankAccountRepository.delete(getBankAccount(iban));
     }
 }

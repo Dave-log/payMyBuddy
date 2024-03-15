@@ -7,7 +7,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
-@Entity @Table(name="bank_account", uniqueConstraints = {@UniqueConstraint(name = "unique iban", columnNames = {"iban"})})
+@Entity
+@Table(name="bank_account", uniqueConstraints = {@UniqueConstraint(name = "unique iban", columnNames = {"iban"})})
 public class BankAccount {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

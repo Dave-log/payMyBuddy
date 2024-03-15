@@ -15,7 +15,8 @@ import java.util.Date;
 
 @Data
 @DynamicUpdate
-@Entity @Table(name="transaction")
+@Entity
+@Table(name="transaction")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Transaction {
 
