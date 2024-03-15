@@ -20,8 +20,9 @@ public class TransactionValidatorService {
         this.bankAccountService = bankAccountService;
     }
 
-    public boolean isValidTransaction(Transaction transaction, long recipientId, BigDecimal amount) {
+    public boolean isValidTransaction(Transaction transaction, BigDecimal amount) {
         User user = userService.getUser(transaction.getSender().getId());
+        long recipientId = transaction.getRecipientId();
 
         return switch (transaction.getType()) {
             case DEPOSIT -> {

@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS `transaction` (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     description VARCHAR(255),
     type VARCHAR(50) NOT NULL,
-    status VARCHAR(50) DEFAULT 'PENDING',
     date DATETIME DEFAULT NOW(),
     amount DECIMAL(10,2),
     fee DECIMAL(10,2),

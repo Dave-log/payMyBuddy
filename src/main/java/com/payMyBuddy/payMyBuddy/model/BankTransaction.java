@@ -13,4 +13,9 @@ public class BankTransaction extends Transaction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipient_bank_id")
     private BankAccount recipientBank;
+
+    @Override
+    public long getRecipientId() {
+        return recipientBank.getId();
+    }
 }

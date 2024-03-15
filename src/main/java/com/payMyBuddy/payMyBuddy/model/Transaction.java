@@ -3,7 +3,6 @@ package com.payMyBuddy.payMyBuddy.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.payMyBuddy.payMyBuddy.enums.TransactionStatus;
 import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
@@ -26,9 +25,6 @@ public abstract class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionType type;
 
-    @Enumerated(EnumType.STRING)
-    private TransactionStatus status;
-
     private String description;
 
     @Temporal(TemporalType.DATE)
@@ -46,15 +42,5 @@ public abstract class Transaction {
     @JoinColumn(name = "sender_id")
     private User sender;
 
-//    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-//    @JsonIdentityReference(alwaysAsId=true)
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "recipient_user_id")
-//    private User recipientUser;
-//
-//    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-//    @JsonIdentityReference(alwaysAsId=true)
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "recipient_bank_id")
-//    private BankAccount recipientBank;
+    public abstract long getRecipientId();
 }

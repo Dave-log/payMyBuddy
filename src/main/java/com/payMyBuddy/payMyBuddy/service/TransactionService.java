@@ -2,7 +2,6 @@ package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.dto.BankTransactionRequestDTO;
 import com.payMyBuddy.payMyBuddy.dto.BuddyTransactionRequestDTO;
-import com.payMyBuddy.payMyBuddy.enums.TransactionStatus;
 import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import com.payMyBuddy.payMyBuddy.exceptions.BankAccountNotFoundException;
 import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionException;
@@ -40,7 +39,7 @@ public class TransactionService {
         this.bankAccountService = bankAccountService;
     }
 
-    public void transfer(BuddyTransactionRequestDTO buddyTransactionRequestDTO) {
+    public Transaction transfer(BuddyTransactionRequestDTO buddyTransactionRequestDTO) {
         User currentUser = userService.getCurrentUser();
         String recipientEmail = buddyTransactionRequestDTO.recipientEmail();
         User recipientUser = userService.getUser(recipientEmail);
@@ -57,10 +56,10 @@ public class TransactionService {
         buddyTransaction.setAmount(buddyTransactionRequestDTO.amount());
         buddyTransaction.setFeePaidBySender(buddyTransactionRequestDTO.feePaidBySender());
 
-        performTransaction(buddyTransaction);
+        return performTransaction(buddyTransaction);
     }
 
-    public void makeBankTransaction(BankTransactionRequestDTO bankTransactionRequestDTO) {
+    public Transaction makeBankTransaction(BankTransactionRequestDTO bankTransactionRequestDTO) {
         User currentUser = userService.getCurrentUser();
         BankAccount bankAccount = bankAccountService.getBankAccount(bankTransactionRequestDTO.id());
 
@@ -76,52 +75,25 @@ public class TransactionService {
         bankTransaction.setAmount(bankTransactionRequestDTO.amount());
         bankTransaction.setFeePaidBySender(bankTransactionRequestDTO.feePaidBySender());
 
-        performTransaction(bankTransaction);
+        return performTransaction(bankTransaction);
     }
 
-    private void performTransaction(Transaction transaction) {
-        // First we need to check if recipient is a BankAccount or a User in order to get the id.
-        long recipientId = transaction.getType().equals(TransactionType.TRANSFER) ?
-                ((BuddyTransaction) transaction).getRecipientUser().getId() :
-                ((BankTransaction) transaction).getRecipientBank().getId();
-
-        // Next we calculate the fee and adjust the amount in the case where it is the user who pays the fee.
+    private Transaction performTransaction(Transaction transaction) {
+        // First we calculate the fee and adjust the amount in the case where it is the user who pays the fee.
         calculatorService.calculateFee(transaction);
         BigDecimal amount = transaction.getAmount();
         BigDecimal amountPlusFee = transaction.isFeePaidBySender() ? amount.add(transaction.getFee()) : amount;
         BigDecimal amountMinusFee = transaction.isFeePaidBySender() ? amount : amount.subtract(transaction.getFee());
 
         // Then we check if the transaction is valid by throwing an exception if it is not.
-        if (!validatorService.isValidTransaction(transaction, recipientId, amountPlusFee)) {
-            changeTransactionStatus(transaction, TransactionStatus.FAILED);
+        if (!validatorService.isValidTransaction(transaction, amountPlusFee)) {
             throw new InvalidTransactionException("Invalid transaction");
         }
 
         // Finally we perform calculations on user balances
         calculatorService.updateBalances(transaction, amountPlusFee, amountMinusFee);
 
-        // TODO : The status of the transaction has to be PENDING or PROCESSING in some use cases instead of COMPLETED
-        changeTransactionStatus(transaction, TransactionStatus.COMPLETED);
-    }
-
-    public void cancelTransaction(Transaction transaction) {
-        Optional<Transaction> transactionOptional = transactionRepository.findById(transaction.getId());
-        if (transactionOptional.isEmpty()) {
-            throw new TransactionNotFoundException("Transaction not found with id: " + transaction.getId());
-        }
-
-        Transaction existingTransaction = transactionOptional.get();
-        TransactionStatus currentStatus = existingTransaction.getStatus();
-        if (currentStatus != TransactionStatus.PENDING && currentStatus != TransactionStatus.PROCESSING) {
-            throw new InvalidTransactionStatusException("Transaction cannot be cancelled as it is not in PENDING or PROCESSING state");
-        }
-
-        changeTransactionStatus(transaction, TransactionStatus.CANCELLED);
-    }
-
-    private void changeTransactionStatus(Transaction transaction, TransactionStatus status) {
-        transaction.setStatus(status);
-        transactionRepository.save(transaction);
+        return saveTransaction(transaction);
     }
 
     public Transaction saveTransaction(Transaction transaction) { return transactionRepository.save(transaction); }
