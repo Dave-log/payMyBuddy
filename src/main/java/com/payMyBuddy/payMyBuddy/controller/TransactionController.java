@@ -27,13 +27,21 @@ public class TransactionController {
 
     @PostMapping("/transfer")
     public ResponseEntity<String> transfer(@RequestBody BuddyTransactionRequestDTO buddyTransactionRequestDTO) {
-        transactionService.transfer(buddyTransactionRequestDTO);
-        return ResponseEntity.ok("Transfer successful");
+        try {
+            transactionService.transfer(buddyTransactionRequestDTO);
+            return ResponseEntity.ok("Transfer successful");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/bank-transaction")
     public ResponseEntity<String> makeBankTransaction(@RequestBody BankTransactionRequestDTO bankTransactionRequestDTO) {
-        transactionService.makeBankTransaction(bankTransactionRequestDTO);
-        return ResponseEntity.ok("Bank transaction successful");
+        try {
+            transactionService.makeBankTransaction(bankTransactionRequestDTO);
+            return ResponseEntity.ok("Bank transaction successful");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

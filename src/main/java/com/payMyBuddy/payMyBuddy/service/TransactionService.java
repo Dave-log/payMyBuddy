@@ -3,10 +3,7 @@ package com.payMyBuddy.payMyBuddy.service;
 import com.payMyBuddy.payMyBuddy.dto.BankTransactionRequestDTO;
 import com.payMyBuddy.payMyBuddy.dto.BuddyTransactionRequestDTO;
 import com.payMyBuddy.payMyBuddy.enums.TransactionType;
-import com.payMyBuddy.payMyBuddy.exceptions.BankAccountNotFoundException;
 import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionException;
-import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionStatusException;
-import com.payMyBuddy.payMyBuddy.exceptions.TransactionNotFoundException;
 import com.payMyBuddy.payMyBuddy.model.*;
 import com.payMyBuddy.payMyBuddy.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
@@ -14,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -48,6 +44,10 @@ public class TransactionService {
             throw new InvalidTransactionException("Recipient user is not your buddy");
         }
 
+        if (isNotPositiveAmount(buddyTransactionRequestDTO.amount())) {
+            throw new InvalidTransactionException("Amount must be strictly positive");
+        }
+
         BuddyTransaction buddyTransaction = new BuddyTransaction();
         buddyTransaction.setDescription(buddyTransactionRequestDTO.description());
         buddyTransaction.setType(TransactionType.TRANSFER);
@@ -64,7 +64,11 @@ public class TransactionService {
         BankAccount bankAccount = bankAccountService.getBankAccount(bankTransactionRequestDTO.id());
 
         if (!currentUser.getBankAccounts().contains(bankAccount)) {
-            throw new BankAccountNotFoundException("Recipient is not your bank account");
+            throw new InvalidTransactionException("Recipient is not your bank account");
+        }
+
+        if (isNotPositiveAmount(bankTransactionRequestDTO.amount())) {
+            throw new InvalidTransactionException("Amount must be strictly positive");
         }
 
         BankTransaction bankTransaction = new BankTransaction();
@@ -80,10 +84,11 @@ public class TransactionService {
 
     private Transaction performTransaction(Transaction transaction) {
         // First we calculate the fee and adjust the amount in the case where it is the user who pays the fee.
-        calculatorService.calculateFee(transaction);
         BigDecimal amount = transaction.getAmount();
-        BigDecimal amountPlusFee = transaction.isFeePaidBySender() ? amount.add(transaction.getFee()) : amount;
-        BigDecimal amountMinusFee = transaction.isFeePaidBySender() ? amount : amount.subtract(transaction.getFee());
+        BigDecimal fee = calculatorService.calculateFee(amount);
+        BigDecimal amountPlusFee = transaction.isFeePaidBySender() ? amount.add(fee) : amount;
+        BigDecimal amountMinusFee = transaction.isFeePaidBySender() ? amount : amount.subtract(fee);
+        transaction.setFee(fee);
 
         // Then we check if the transaction is valid by throwing an exception if it is not.
         if (!validatorService.isValidTransaction(transaction, amountPlusFee)) {
@@ -103,4 +108,8 @@ public class TransactionService {
     public Iterable<Transaction> getTransactions() { return transactionRepository.findAll(); }
 
     public void deleteTransaction(Transaction transaction) { transactionRepository.delete(transaction); }
+
+    private boolean isNotPositiveAmount(BigDecimal amount) {
+        return amount.signum() <= 0;
+    }
 }

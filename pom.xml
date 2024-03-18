@@ -108,6 +108,9 @@
 						<exclude>**/dto/*.class</exclude>
 						<exclude>**/configuration/*.class</exclude>
 						<exclude>**/exceptions/*.class</exclude>
+						<exclude>**/constants/*.class</exclude>
+						<exclude>**/enums/*.class</exclude>
+						<exclude>**/repository/*.class</exclude>
 						<exclude>**/PayMyBuddyApplication.class</exclude>
 					</excludes>
 				</configuration>

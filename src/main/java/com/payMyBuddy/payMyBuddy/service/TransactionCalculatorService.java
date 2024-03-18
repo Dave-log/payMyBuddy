@@ -21,10 +21,10 @@ public class TransactionCalculatorService {
         this.userService = userService;
     }
 
-    public void calculateFee(Transaction transaction) {
-        BigDecimal fee = transaction.getAmount().multiply(TransactionConstants.FEE_PERCENTAGE);
+    public BigDecimal calculateFee(BigDecimal amount) {
+        BigDecimal fee = amount.multiply(TransactionConstants.FEE_PERCENTAGE);
         fee = fee.setScale(2, RoundingMode.HALF_UP);
-        transaction.setFee(fee);
+        return fee;
     }
 
     public void updateBalances(Transaction transaction, BigDecimal amountPlusFee, BigDecimal amountMinusFee) {
