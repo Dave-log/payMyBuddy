@@ -76,19 +76,15 @@ public class UserService {
 
     public User update(User user) {
         User userToUpdate = getUser(user.getEmail());
-        if (userToUpdate != null) {
-            userToUpdate.setFirstname(user.getFirstname());
-            userToUpdate.setLastname(user.getLastname());
-            userToUpdate.setPassword(user.getPassword());
-            userToUpdate.setBalance(user.getBalance());
-            userToUpdate.setRole(user.getRole());
-            userToUpdate.setBankAccounts(user.getBankAccounts());
-            userToUpdate.setTransactions(user.getTransactions());
-            userToUpdate.setBuddies(user.getBuddies());
-            return userRepository.save(userToUpdate);
-        } else {
-            throw new UserNotFoundException("No user found with this email : " + user.getEmail());
-        }
+        userToUpdate.setFirstname(user.getFirstname());
+        userToUpdate.setLastname(user.getLastname());
+        userToUpdate.setPassword(user.getPassword());
+        userToUpdate.setBalance(user.getBalance());
+        userToUpdate.setRole(user.getRole());
+        userToUpdate.setBankAccounts(user.getBankAccounts());
+        userToUpdate.setTransactions(user.getTransactions());
+        userToUpdate.setBuddies(user.getBuddies());
+        return userRepository.save(userToUpdate);
     }
 
     public void delete(long id) {
