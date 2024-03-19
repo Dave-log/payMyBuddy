@@ -43,4 +43,7 @@ public abstract class Transaction {
     private User sender;
 
     public abstract long getRecipientId();
+
+    // for testing
+    //public abstract void setRecipientId();
 }

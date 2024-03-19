@@ -4,6 +4,7 @@ import com.payMyBuddy.payMyBuddy.dto.BankTransactionRequestDTO;
 import com.payMyBuddy.payMyBuddy.dto.BuddyTransactionRequestDTO;
 import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionException;
+import com.payMyBuddy.payMyBuddy.exceptions.TransactionNotFoundException;
 import com.payMyBuddy.payMyBuddy.model.*;
 import com.payMyBuddy.payMyBuddy.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
@@ -42,10 +43,6 @@ public class TransactionService {
 
         if (!currentUser.getBuddies().contains(recipientUser)) {
             throw new InvalidTransactionException("Recipient user is not your buddy");
-        }
-
-        if (isNotPositiveAmount(buddyTransactionRequestDTO.amount())) {
-            throw new InvalidTransactionException("Amount must be strictly positive");
         }
 
         BuddyTransaction buddyTransaction = new BuddyTransaction();
@@ -103,11 +100,17 @@ public class TransactionService {
 
     public Transaction saveTransaction(Transaction transaction) { return transactionRepository.save(transaction); }
 
-    public Transaction getTransaction(long id) { return transactionRepository.findById(id).orElse(null); }
+    public Transaction getTransaction(long id) {
+        return transactionRepository.findById(id)
+                .orElseThrow(() -> new TransactionNotFoundException("Transaction not found (id provided : " + id + ")"));
+    }
 
     public Iterable<Transaction> getTransactions() { return transactionRepository.findAll(); }
 
-    public void deleteTransaction(Transaction transaction) { transactionRepository.delete(transaction); }
+    public void deleteTransaction(long id) {
+        Transaction transaction = getTransaction(id);
+        transactionRepository.delete(transaction);
+    }
 
     private boolean isNotPositiveAmount(BigDecimal amount) {
         return amount.signum() <= 0;

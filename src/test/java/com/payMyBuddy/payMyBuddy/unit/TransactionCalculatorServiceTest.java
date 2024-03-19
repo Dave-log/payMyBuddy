@@ -20,6 +20,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class TransactionCalculatorServiceTest {
+
     @Mock
     private UserService userService;
 
@@ -27,7 +28,7 @@ public class TransactionCalculatorServiceTest {
     private TransactionCalculatorService calculatorService;
 
     @Test
-    public void calculateFee_WhenAmountIsPositive() {
+    public void testCalculateFee_WhenAmountIsPositive() {
         // Arrange
         BigDecimal amount = new BigDecimal("100.00");
 
@@ -40,7 +41,7 @@ public class TransactionCalculatorServiceTest {
     }
 
     @Test
-    public void updateBalances_WhenDeposit() {
+    public void testUpdateBalances_WhenDeposit() {
         // Arrange
         Transaction transaction = new BankTransaction();
         transaction.setType(TransactionType.DEPOSIT);
@@ -59,7 +60,7 @@ public class TransactionCalculatorServiceTest {
     }
 
     @Test
-    public void updateBalances_WhenWithdrawal() {
+    public void testUpdateBalances_WhenWithdrawal() {
         // Arrange
         Transaction transaction = new BankTransaction();
         transaction.setType(TransactionType.WITHDRAWAL);
@@ -78,7 +79,7 @@ public class TransactionCalculatorServiceTest {
     }
 
     @Test
-    public void updateBalances_WhenTransfer() {
+    public void testUpdateBalances_WhenTransfer() {
         // Arrange
         BuddyTransaction transaction = new BuddyTransaction();
         transaction.setType(TransactionType.TRANSFER);
