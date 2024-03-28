@@ -8,96 +8,49 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping(value = "/api/auth")
+@Controller
 public class AuthController {
 
     private final AuthService authService;
 
-    private final UserService userService;
-
     @Autowired
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.userService = userService;
+    }
+
+    @GetMapping("/")
+    public String home() {
+        return "redirect:Home";
     }
 
     @GetMapping("/login")
-    public ResponseEntity<String> login() {
+    public String getLoginPage() {
+        return "login_page";
+    }
 
-        User user = userService.getCurrentUser();
-        if (user == null) {
-            return new ResponseEntity<>("User is not authenticated or does not exist", HttpStatus.FORBIDDEN);
-        } else {
-            // TODO : renvoyer vers la page Accueil
-            return new ResponseEntity<>("Welcome " + user.getFirstname() + " " + user.getLastname() + " !", HttpStatus.OK);
-        }
+    @GetMapping("/error")
+    public String getErrorPage() {
+        return "error_page";
+    }
+
+    @GetMapping("/register")
+    public String getRegistrationPage() {
+        return "registration_page";
     }
 
     @PostMapping("/register")
-    @Transactional
-    public ResponseEntity<String> register(@RequestBody UserRegisterDTO registerDTO) {
-
-        if (authService.existsByEmail(registerDTO.email())) {
-            return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
+    public String registerUser(@ModelAttribute("registerDTO") UserRegisterDTO userRegisterDTO, Model model) {
+        if (authService.existsByEmail(userRegisterDTO.email())) {
+            model.addAttribute("registerError", "Email already taken!");
+            return "registration_page";
         }
 
-        authService.register(registerDTO);
+        authService.register(userRegisterDTO);
 
-        return new ResponseEntity<>("User registered success!", HttpStatus.OK);
+        return "redirect:login?success=true";
     }
-
-//    // TODO : SUPPRIMER TOUT CE QUI SUIT
-//    @GetMapping("/")
-//    public String getUserInfo(Principal user, @AuthenticationPrincipal OidcUser oidcUser) {
-//        StringBuilder userInfos = new StringBuilder();
-//        if(user instanceof UsernamePasswordAuthenticationToken) {
-//            userInfos.append(getUsernamePasswordLoginInfo(user));
-//        } else if(user instanceof OAuth2AuthenticationToken) {
-//            userInfos.append(getOAuth2LoginInfo(user, oidcUser));
-//        }
-//        return userInfos.toString();
-//    }
-//
-//    private StringBuffer getUsernamePasswordLoginInfo(Principal user) {
-//        StringBuffer usernameInfo = new StringBuffer();
-//        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) user;
-//        if(token.isAuthenticated()) {
-//            User u = (User) token.getPrincipal();
-//            usernameInfo.append("Welcome, ").append(u.getUsername());
-//        } else {
-//            usernameInfo.append("NA");
-//        }
-//        return usernameInfo;
-//    }
-//
-//    private StringBuffer getOAuth2LoginInfo(Principal user, OidcUser oidcUser) {
-//        StringBuffer protectedInfo = new StringBuffer();
-//        OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) user;
-//        OAuth2AuthorizedClient authClient = authorizedClientService.loadAuthorizedClient(
-//                token.getAuthorizedClientRegistrationId(),
-//                token.getName());
-//        if(token.isAuthenticated()) {
-//            Map<String, Object> userAttributes = token.getPrincipal().getAttributes();
-//            String userToken = authClient.getAccessToken().getTokenValue();
-//            protectedInfo.append("Welcome, ").append(userAttributes.get("name")).append("<br><br>");
-//            protectedInfo.append("email : ").append(userAttributes.get("email")).append("<br><br>");
-//            protectedInfo.append("Access token : ").append(userToken);
-//
-//            OidcIdToken idToken = oidcUser.getIdToken();
-//            if(idToken != null) {
-//                protectedInfo.append("idToken value : ").append(idToken.getTokenValue()).append("<br>");
-//                protectedInfo.append("Token mapped values <br>");
-//                Map<String, Object> claims = idToken.getClaims();
-//                for(String key : claims.keySet()) {
-//                    protectedInfo.append(" ").append(key).append(" : ").append(claims.get(key)).append("<br>");
-//                }
-//            }
-//        } else {
-//            protectedInfo.append("NA");
-//        }
-//        return protectedInfo;
-//    }
 }

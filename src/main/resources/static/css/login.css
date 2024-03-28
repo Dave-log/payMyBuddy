@@ -1,0 +1,51 @@
+.border {
+    border: 1px solid;
+    border-radius: 10px;
+}
+
+input {
+    padding: 12px 20px;
+    margin: 20px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1.4em;
+}
+
+#email, #password, #lastName, #firstName, #confirm {
+    width : 90%;
+}
+
+label {
+    font-size: 1.4em;
+}
+
+input[type=checkbox] {
+    vertical-align: middle;
+    position: relative;
+    bottom: 0.2em;
+}
+
+.button {
+    width : 28%;
+    color: white;
+    border-radius : 0.5em;
+    background-color: #3b68d9;
+    margin : 2.5em auto;
+    font-size: 1.4em;
+}
+
+.button:hover {
+    background-color: #588aed;
+    cursor: pointer;
+}
+
+.oauth {
+    margin: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.oauth:hover {
+    color: #af27e7
+}

@@ -1,11 +1,10 @@
-package com.payMyBuddy.payMyBuddy.unit;
+package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.exceptions.BuddyAlreadyInBuddyListException;
 import com.payMyBuddy.payMyBuddy.exceptions.BuddyNotFoundInBuddyListException;
 import com.payMyBuddy.payMyBuddy.exceptions.UserNotFoundException;
 import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.repository.UserRepository;
-import com.payMyBuddy.payMyBuddy.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;

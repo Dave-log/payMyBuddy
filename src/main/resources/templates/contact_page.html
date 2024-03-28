@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/common.css}"/>
+    <link rel="stylesheet" th:href="@{/css/contact.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/breadcrumb.css}"/>
+    <title>Pay My Buddy - Contact</title>
+</head>
+
+<body>
+    <div th:insert="~{fragments/navbar :: navbar}"></div>
+    <div class="breadcrumb-container">
+        <div th:insert="~{fragments/breadcrumb :: breadcrumb}"></div>
+    </div>
+    <div class="main-frame">
+        <h1 class="title">Pay My Buddy</h1>
+        <section>
+            <div class="section-title">Send us a message</div>
+            <form th:action="@{/contact}" method="post">
+                <div>
+                    <label for="contact"></label>
+                    <textarea name="contact" id="contact" rows="12" cols="60" th:text="${param.contact}" placeholder="Write your message here..."></textarea>
+                    <br/>
+                    <input class="button" type="submit" value="Send"/>
+                </div>
+            </form>
+        </section>
+    </div>
+</body>
+</html>

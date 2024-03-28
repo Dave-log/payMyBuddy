@@ -1,12 +1,10 @@
-package com.payMyBuddy.payMyBuddy.unit;
+package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.dto.BankAccountRegisterDTO;
 import com.payMyBuddy.payMyBuddy.exceptions.BankAccountNotFoundException;
 import com.payMyBuddy.payMyBuddy.model.BankAccount;
 import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.repository.BankAccountRepository;
-import com.payMyBuddy.payMyBuddy.service.BankAccountService;
-import com.payMyBuddy.payMyBuddy.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

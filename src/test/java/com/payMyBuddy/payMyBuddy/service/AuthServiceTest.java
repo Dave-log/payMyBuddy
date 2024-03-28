@@ -1,9 +1,8 @@
-package com.payMyBuddy.payMyBuddy.unit;
+package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.dto.UserRegisterDTO;
 import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.repository.UserRepository;
-import com.payMyBuddy.payMyBuddy.service.AuthService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

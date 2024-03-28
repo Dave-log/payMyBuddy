@@ -1,6 +1,6 @@
 package com.payMyBuddy.payMyBuddy.service;
 
-import com.payMyBuddy.payMyBuddy.constants.TransactionConstants;
+import com.payMyBuddy.payMyBuddy.constants.TransactionConst;
 import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import com.payMyBuddy.payMyBuddy.model.BuddyTransaction;
 import com.payMyBuddy.payMyBuddy.model.Transaction;
@@ -22,7 +22,7 @@ public class TransactionCalculatorService {
     }
 
     public BigDecimal calculateFee(BigDecimal amount) {
-        BigDecimal fee = amount.multiply(TransactionConstants.FEE_PERCENTAGE);
+        BigDecimal fee = amount.multiply(TransactionConst.FEE_PERCENTAGE);
         fee = fee.setScale(2, RoundingMode.HALF_UP);
         return fee;
     }

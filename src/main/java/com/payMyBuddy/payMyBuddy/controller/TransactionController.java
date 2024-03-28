@@ -8,9 +8,10 @@ import com.payMyBuddy.payMyBuddy.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("/transactions")
 public class TransactionController {
 
@@ -22,6 +23,7 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}")
+    @ResponseBody
     public ResponseEntity<?> getTransaction(@PathVariable long id) {
         try {
             return ResponseEntity.ok(transactionService.getTransaction(id));
@@ -31,9 +33,10 @@ public class TransactionController {
     }
 
     @GetMapping("/all")
+    @ResponseBody
     public Iterable<Transaction> getTransactions() { return transactionService.getTransactions(); }
 
-    @PostMapping("/transfer")
+    @PostMapping("/buddy-transaction")
     public ResponseEntity<String> transfer(@RequestBody BuddyTransactionRequestDTO buddyTransactionRequestDTO) {
         try {
             transactionService.transfer(buddyTransactionRequestDTO);
@@ -54,6 +57,7 @@ public class TransactionController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseBody
     public ResponseEntity<String> deleteTransaction(@PathVariable long id) {
         try {
             transactionService.deleteTransaction(id);

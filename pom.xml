@@ -76,13 +76,28 @@
 			<artifactId>json-path</artifactId>
 			<version>2.9.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>5.3.3</version>
+		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</repository>
+		<repository>
+			<id>webjars</id>
+			<url>https://repo.maven.apache.org/maven2/webjars</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>

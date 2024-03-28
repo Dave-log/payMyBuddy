@@ -1,10 +1,7 @@
-package com.payMyBuddy.payMyBuddy.unit;
+package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import com.payMyBuddy.payMyBuddy.model.*;
-import com.payMyBuddy.payMyBuddy.service.BankAccountService;
-import com.payMyBuddy.payMyBuddy.service.TransactionValidatorService;
-import com.payMyBuddy.payMyBuddy.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

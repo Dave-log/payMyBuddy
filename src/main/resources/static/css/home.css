@@ -1,0 +1,39 @@
+.main-frame {
+    margin: 9.8% auto auto;
+}
+
+.menu{
+    font-family: Arial, Helvetica, sans-serif;
+    color : white;
+    background-color: #48ce3c;
+    width : 70%;
+    padding: 12px 30px;
+    margin: 20px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1.4em;
+}
+
+.menu:hover{
+    background-color: #74f05b;
+    cursor: pointer;
+}
+.logout:hover{
+    background-color: #588aed;
+    cursor: pointer;
+}
+
+
+.logout{
+    display: block;
+    width : 15%;
+    color : white;
+    font-size: 1.3em;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 1em auto;
+    background-color: #3b68d9;
+    border-radius: 0.3em;
+}

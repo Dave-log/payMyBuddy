@@ -1,16 +1,17 @@
 package com.payMyBuddy.payMyBuddy.controller;
 
-import com.payMyBuddy.payMyBuddy.enums.RoleType;
+import com.payMyBuddy.payMyBuddy.model.BankAccount;
+import com.payMyBuddy.payMyBuddy.model.Transaction;
 import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("user")
 public class UserController {
 
     private final UserService userService;
@@ -18,6 +19,18 @@ public class UserController {
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/currentBuddies")
+    public Set<User> getCurrentUserBuddies() {
+        User currentUser = userService.getCurrentUser();
+        return currentUser.getBuddies();
+    }
+
+    @GetMapping("/currentBankAccounts")
+    public List<BankAccount> getCurrentUserBankAccounts() {
+        User currentUser = userService.getCurrentUser();
+        return currentUser.getBankAccounts();
     }
 
     @GetMapping("{id}")
@@ -49,5 +62,11 @@ public class UserController {
     @DeleteMapping("remove-buddy/{email}")
     public void removeBuddy(@PathVariable String email) {
         userService.removeBuddy(email);
+    }
+
+    @GetMapping("/transactions")
+    public List<Transaction> getUserTransactions() {
+        User currentUser = userService.getCurrentUser();
+        return currentUser.getTransactions();
     }
 }

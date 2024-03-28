@@ -30,7 +30,8 @@ public class User {
     @OneToMany(targetEntity = BankAccount.class, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BankAccount> bankAccounts = new ArrayList<>();
 
-    @JsonIgnore
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     @OneToMany(targetEntity = Transaction.class, mappedBy = "sender", fetch = FetchType.LAZY)
     private List<Transaction> transactions = new ArrayList<>();
 

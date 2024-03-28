@@ -1,0 +1,24 @@
+.section-title {
+    margin-top: 2em;
+    margin-left: 7em;
+    padding-bottom: 0.5em;
+    text-align: left;
+    font-size: 1.2em;
+}
+
+.button {
+    width : 20%;
+    color: white;
+    border-radius : 0.3em;
+    background-color: #3b68d9;
+    margin : 1.5em auto;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    font-size: 1.4em;
+    border: 0;
+}
+
+.button:hover {
+    background-color: #588aed;
+    cursor: pointer;
+}

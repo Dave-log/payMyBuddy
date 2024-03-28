@@ -1,0 +1,14 @@
+<div th:fragment="breadcrumb">
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li th:each="page, i : ${parentPages}">
+                <a th:if="${page != currentPage}" th:href="@{'/' + ${page}}">[[${page}]]</a>
+                <span th:if="${page == currentPage}" th:text="${page}"></span>
+                <span th:unless="${i.last}">/</span>
+            </li>
+            <li th:if="${currentPage != null}">
+                <span th:text="${currentPage}"></span>
+            </li>
+        </ul>
+    </nav>
+</div>

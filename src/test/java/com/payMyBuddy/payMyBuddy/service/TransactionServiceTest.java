@@ -1,4 +1,4 @@
-package com.payMyBuddy.payMyBuddy.unit;
+package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.dto.BankTransactionRequestDTO;
 import com.payMyBuddy.payMyBuddy.dto.BuddyTransactionRequestDTO;
@@ -7,7 +7,6 @@ import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionException;
 import com.payMyBuddy.payMyBuddy.exceptions.TransactionNotFoundException;
 import com.payMyBuddy.payMyBuddy.model.*;
 import com.payMyBuddy.payMyBuddy.repository.TransactionRepository;
-import com.payMyBuddy.payMyBuddy.service.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

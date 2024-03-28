@@ -1,0 +1,13 @@
+<div th:fragment="navbar">
+    <header class="header">
+        <a href="/" class="navbar-brand">Pay My Buddy</a>
+        <nav class="navbar-links">
+            <!--/*@thymesVar id="currentPage" type=""*/-->
+            <a th:href="@{/Home}" th:classappend="${currentPage == 'Home' ? 'active' : ''}">Home</a>
+            <a th:href="@{/Transfer}" th:classappend="${currentPage == 'Transfer' ? 'active' : ''}">Transfer</a>
+            <a th:href="@{/Profile}" th:classappend="${currentPage == 'Profile' ? 'active' : ''}">Profile</a>
+            <a th:href="@{/Contact}" th:classappend="${currentPage == 'Contact' ? 'active' : ''}">Contact</a>
+            <a th:href="logout">Log Off</a>
+        </nav>
+    </header>
+</div>

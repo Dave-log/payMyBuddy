@@ -79,7 +79,7 @@ public class TransactionService {
         return performTransaction(bankTransaction);
     }
 
-    private Transaction performTransaction(Transaction transaction) {
+    Transaction performTransaction(Transaction transaction) {
         // First we calculate the fee and adjust the amount in the case where it is the user who pays the fee.
         BigDecimal amount = transaction.getAmount();
         BigDecimal fee = calculatorService.calculateFee(amount);

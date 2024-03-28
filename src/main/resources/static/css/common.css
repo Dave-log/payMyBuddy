@@ -1,0 +1,39 @@
+a {
+    text-decoration: none;
+}
+
+body {
+    margin:0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.breadcrumb-container {
+    text-align: left;
+    margin-bottom: 0;
+    margin-top: 100px;
+}
+
+.main-frame {
+    width : 40%;
+    height : 75%;
+    margin: 1em auto;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.title {
+    color : white;
+    width: 40%;
+    border-radius : 0.5em;
+    background: #157919 linear-gradient(to right, #5eb64a, #a9ce68);
+    padding: 1em;
+    margin: 2em auto;
+    font-size: 1.4em;
+}
+
+.error {
+    color : red;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: auto;
+}

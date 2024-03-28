@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay My Buddy - Profile</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/breadcrumb.css}"/>
+</head>
+<body>
+    <div th:insert="~{fragments/navbar :: navbar}"></div>
+    <div class="breadcrumb-container">
+        <div th:insert="~{fragments/breadcrumb :: breadcrumb}"></div>
+    </div>
+</body>
+</html>
