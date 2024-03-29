@@ -12,7 +12,7 @@
 <body>
     <div class="main-frame border">
         <h1 class="title">Pay My Buddy</h1>
-        <form th:action="@{/register}" th:object="${registerDTO}" method="post">
+        <form th:action="@{/register}" th:object="${registerDTO}" method="POST">
             <label for="firstName"></label>
             <input type="text" id="firstName" name="firstName" placeholder="First name" required>
             <label for="lastName"></label>

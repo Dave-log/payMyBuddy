@@ -5,11 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,7 +34,7 @@ public class SecurityConfigurer {
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .requestMatchers("/","/login", "/register", "/error").permitAll()
-                    .requestMatchers("/Home", "/Contact", "/Profile", "/Transfer", "Add-buddy", "Add-bank-account").hasRole("USER")
+                    .requestMatchers("/home", "/contact", "/profile", "/transfer", "add-buddy", "add-bank-account").hasRole("USER")
                     .requestMatchers("/user/**").hasRole("USER")
                     .requestMatchers("/bank-account/**").hasRole("USER")
                     .requestMatchers("/transactions/**").hasRole("USER")
@@ -44,12 +42,12 @@ public class SecurityConfigurer {
                 .formLogin(form -> form
                         .loginPage("/login").permitAll()
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/Home")
+                        .defaultSuccessUrl("/home")
                         .usernameParameter("email")
                         .passwordParameter("password"))
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login").permitAll()
-                        .defaultSuccessUrl("/Home"))
+                        .defaultSuccessUrl("/home"))
                 .logout(LogoutConfigurer::permitAll);
         return http.build();
     }

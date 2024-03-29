@@ -5,6 +5,8 @@ import com.payMyBuddy.payMyBuddy.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -18,8 +20,13 @@ public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String firstname;
-    private String lastname;
+
+    @Column(name="firstname")
+    private String firstName;
+
+    @Column(name="lastname")
+    private String lastName;
+
     private String email;
     private String password;
     private BigDecimal balance = BigDecimal.ZERO;
@@ -27,19 +34,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private RoleType role = RoleType.USER;
 
-    @OneToMany(targetEntity = BankAccount.class, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<BankAccount> bankAccounts = new ArrayList<>();
-
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
-    @OneToMany(targetEntity = Transaction.class, mappedBy = "sender", fetch = FetchType.LAZY)
-    private List<Transaction> transactions = new ArrayList<>();
-
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_user",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "buddy_id") )
+    @Fetch(FetchMode.JOIN)
     private Set<User> buddies = new HashSet<>();
 }

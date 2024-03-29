@@ -14,12 +14,6 @@ public class BankAccount {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @Column(name = "account_number")
     private String accountNumber;
 
@@ -31,4 +25,10 @@ public class BankAccount {
 
     @Column(name = "bank_name")
     private String bankName;
+
+    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

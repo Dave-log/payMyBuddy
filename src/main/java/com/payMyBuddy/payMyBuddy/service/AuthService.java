@@ -22,8 +22,8 @@ public class AuthService {
     public void register(UserRegisterDTO registerDTO) {
 
         User user = new User();
-        user.setFirstname(registerDTO.firstName());
-        user.setLastname(registerDTO.lastName());
+        user.setFirstName(registerDTO.firstName());
+        user.setLastName(registerDTO.lastName());
         user.setEmail(registerDTO.email());
         user.setPassword(passwordEncoder.encode(registerDTO.password()));
 

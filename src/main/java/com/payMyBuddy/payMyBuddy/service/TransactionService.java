@@ -2,6 +2,7 @@ package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.dto.BankTransactionRequestDTO;
 import com.payMyBuddy.payMyBuddy.dto.BuddyTransactionRequestDTO;
+import com.payMyBuddy.payMyBuddy.dto.TransferDTO;
 import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionException;
 import com.payMyBuddy.payMyBuddy.exceptions.TransactionNotFoundException;
@@ -9,9 +10,12 @@ import com.payMyBuddy.payMyBuddy.model.*;
 import com.payMyBuddy.payMyBuddy.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @Transactional
@@ -36,12 +40,31 @@ public class TransactionService {
         this.bankAccountService = bankAccountService;
     }
 
-    public Transaction transfer(BuddyTransactionRequestDTO buddyTransactionRequestDTO) {
+    public Page<TransferDTO> getTransferDTOs(int page, int pageSize) {
         User currentUser = userService.getCurrentUser();
+        List<Transaction> userTransactions = transactionRepository.findBySender(currentUser).stream()
+                .filter(transaction -> transaction.getType() == TransactionType.TRANSFER)
+                .toList();
+
+        int start = page * pageSize;
+        int end = Math.min(start + pageSize, userTransactions.size());
+        List<Transaction> paginatedTransactions = userTransactions.subList(start, end);
+
+        return new PageImpl<>(paginatedTransactions).map(transaction -> {
+            User recipient = userService.getUser(transaction.getRecipientId());
+            return new TransferDTO(
+                    recipient.getFirstName() + " " + recipient.getLastName(),
+                    transaction.getDescription(),
+                    transaction.getAmount()
+            );
+        });
+    }
+
+    public Transaction transfer(User currentUser, BuddyTransactionRequestDTO buddyTransactionRequestDTO) {
         String recipientEmail = buddyTransactionRequestDTO.recipientEmail();
         User recipientUser = userService.getUser(recipientEmail);
 
-        if (!currentUser.getBuddies().contains(recipientUser)) {
+        if (!userService.isRecipientBuddyOfCurrentUser(currentUser.getId(), recipientUser.getId())) {
             throw new InvalidTransactionException("Recipient user is not your buddy");
         }
 
@@ -60,7 +83,7 @@ public class TransactionService {
         User currentUser = userService.getCurrentUser();
         BankAccount bankAccount = bankAccountService.getBankAccount(bankTransactionRequestDTO.id());
 
-        if (!currentUser.getBankAccounts().contains(bankAccount)) {
+        if (!bankAccountService.isBankAccountOwnedByUser(currentUser, bankAccount)) {
             throw new InvalidTransactionException("Recipient is not your bank account");
         }
 
@@ -104,6 +127,8 @@ public class TransactionService {
         return transactionRepository.findById(id)
                 .orElseThrow(() -> new TransactionNotFoundException("Transaction not found (id provided : " + id + ")"));
     }
+
+    public List<Transaction> getUserTransactions(User user) { return transactionRepository.findBySender(user); }
 
     public Iterable<Transaction> getTransactions() { return transactionRepository.findAll(); }
 

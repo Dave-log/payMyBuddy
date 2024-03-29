@@ -5,12 +5,11 @@ import com.payMyBuddy.payMyBuddy.exceptions.BankAccountNotFoundException;
 import com.payMyBuddy.payMyBuddy.model.BankAccount;
 import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.repository.BankAccountRepository;
-import com.payMyBuddy.payMyBuddy.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class BankAccountService {
@@ -34,8 +33,24 @@ public class BankAccountService {
                 .orElseThrow(() -> new BankAccountNotFoundException(" Bank account does not exist (iban provided: " + iban + ")"));
     }
 
+    public List<BankAccount> getUserBankAccounts(User user) {
+        return bankAccountRepository.findByUser(user);
+    }
+
     public Iterable<BankAccount> getBankAccounts() {
         return bankAccountRepository.findAll();
+    }
+
+    public boolean isBankAccountOwnedByUser(User user, BankAccount bankAccount) {
+        List<BankAccount> userBankAccounts = getUserBankAccounts(user);
+        boolean isBankAccountOwnedByUser = false;
+        for (BankAccount account : userBankAccounts) {
+            if (account.equals(bankAccount)) {
+                isBankAccountOwnedByUser = true;
+                break;
+            }
+        }
+        return isBankAccountOwnedByUser;
     }
 
     @Transactional
@@ -50,10 +65,7 @@ public class BankAccountService {
         newBankAccount.setBic(bankAccountRegisterDTO.bic());
         newBankAccount.setBankName(bankAccountRegisterDTO.bankName());
 
-        currentUser.getBankAccounts().add(newBankAccount);
-
         bankAccountRepository.save(newBankAccount);
-        userService.update(currentUser);
     }
 
     public void removeBankAccount(String iban) {

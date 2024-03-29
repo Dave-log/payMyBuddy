@@ -53,16 +53,14 @@ public class TransactionServiceTest {
         User buddy = new User();
         currentUser.setBuddies(Set.of(buddy));
 
-        when(userService.getCurrentUser()).thenReturn(currentUser);
         when(userService.getUser("buddy@example.com")).thenReturn(buddy);
         when(calculatorService.calculateFee(any(BigDecimal.class))).thenReturn(BigDecimal.ZERO);
         when(validatorService.isValidTransaction(any(BuddyTransaction.class), any(BigDecimal.class))).thenReturn(true);
 
         // Act
-        transactionService.transfer(requestDTO);
+        transactionService.transfer(currentUser, requestDTO);
 
         // Assert
-        verify(userService, times(1)).getCurrentUser();
         verify(userService, times(1)).getUser("buddy@example.com");
         verify(validatorService, times(1)).isValidTransaction(any(BuddyTransaction.class), any(BigDecimal.class));
         verify(calculatorService, times(1)).calculateFee(any(BigDecimal.class));
@@ -80,14 +78,12 @@ public class TransactionServiceTest {
         User currentUser = new User();
         User buddy = new User();
 
-        when(userService.getCurrentUser()).thenReturn(currentUser);
         when(userService.getUser("buddy@example.com")).thenReturn(buddy);
 
         // Act & Assert
-        assertThrows(InvalidTransactionException.class, () -> transactionService.transfer(requestDTO));
+        assertThrows(InvalidTransactionException.class, () -> transactionService.transfer(currentUser, requestDTO));
 
         // Verify
-        verify(userService, times(1)).getCurrentUser();
         verify(userService, times(1)).getUser("buddy@example.com");
         verifyNoInteractions(validatorService, calculatorService, transactionRepository);
     }

@@ -27,7 +27,8 @@ public abstract class Transaction {
 
     private String description;
 
-    @Temporal(TemporalType.DATE)
+    @Column(name="date", nullable = false, updatable = false)
+    @CreationTimestamp
     private Date date;
 
     private BigDecimal amount;

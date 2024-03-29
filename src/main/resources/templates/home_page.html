@@ -7,9 +7,14 @@
     <link th:href="@{/css/common.css}" rel="stylesheet"/>
     <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
     <link th:href="@{/css/home.css}" rel="stylesheet"/>
+    <link th:href="@{/css/breadcrumb.css}" rel="stylesheet"/>
 </head>
+
 <body>
     <div th:insert="~{fragments/navbar :: navbar}"></div>
+    <div class="breadcrumb-container">
+        <div th:insert="~{fragments/breadcrumb :: breadcrumb}"></div>
+    </div>
     <div class="main-frame">
         <h1 class="title">Pay My Buddy</h1>
         <h1>Welcome, <span th:text="${firstName}"></span> <span th:text="${lastName}"></span></h1><br>

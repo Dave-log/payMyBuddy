@@ -1,5 +1,6 @@
 package com.payMyBuddy.payMyBuddy.service;
 
+import com.payMyBuddy.payMyBuddy.dto.BuddyDTO;
 import com.payMyBuddy.payMyBuddy.exceptions.BuddyAlreadyInBuddyListException;
 import com.payMyBuddy.payMyBuddy.exceptions.BuddyNotFoundInBuddyListException;
 import com.payMyBuddy.payMyBuddy.exceptions.UserNotFoundException;
@@ -10,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +34,17 @@ public class UserService {
         } else {
             throw new UserNotFoundException("User is not authenticated or does not exist");
         }
+    }
+
+    public List<BuddyDTO> getBuddyDTOs() {
+        User currentUser = getCurrentUser();
+//        List<User> buddyList = new ArrayList<>(currentUser.getBuddies());
+        List<User> buddyList = userRepository.findBuddiesByUserId(currentUser.getId());
+        List<BuddyDTO> buddyDTOs = new ArrayList<>();
+        for (User buddy : buddyList) {
+            buddyDTOs.add(new BuddyDTO(buddy.getEmail(), buddy.getFirstName(), buddy.getLastName()));
+        }
+        return buddyDTOs;
     }
 
     public void addBuddy(String buddyEmail) {
@@ -57,6 +71,10 @@ public class UserService {
         }
     }
 
+    public boolean isRecipientBuddyOfCurrentUser(long currentUserId, long recipientId) {
+        return userRepository.isRecipientBuddyOfCurrentUser(currentUserId, recipientId);
+    }
+
     public User getUser(long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         return optionalUser
@@ -76,13 +94,11 @@ public class UserService {
 
     public User update(User user) {
         User userToUpdate = getUser(user.getEmail());
-        userToUpdate.setFirstname(user.getFirstname());
-        userToUpdate.setLastname(user.getLastname());
+        userToUpdate.setFirstName(user.getFirstName());
+        userToUpdate.setLastName(user.getLastName());
         userToUpdate.setPassword(user.getPassword());
         userToUpdate.setBalance(user.getBalance());
         userToUpdate.setRole(user.getRole());
-        userToUpdate.setBankAccounts(user.getBankAccounts());
-        userToUpdate.setTransactions(user.getTransactions());
         userToUpdate.setBuddies(user.getBuddies());
         return userRepository.save(userToUpdate);
     }

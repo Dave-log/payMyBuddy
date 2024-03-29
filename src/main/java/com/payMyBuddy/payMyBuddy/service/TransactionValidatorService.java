@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class TransactionValidatorService {
@@ -29,31 +30,22 @@ public class TransactionValidatorService {
                 BankAccount bankAccount = bankAccountService.getBankAccount(recipientId);
                 yield user != null
                         && bankAccount != null
-                        && isBankAccountOwnedByUser(user, bankAccount)
+                        && bankAccountService.isBankAccountOwnedByUser(user, bankAccount)
                         && isSufficientBalance(user, amount);
             }
             case WITHDRAWAL -> {
                 BankAccount bankAccount = bankAccountService.getBankAccount(recipientId);
                 yield user != null
                         && bankAccount != null
-                        && isBankAccountOwnedByUser(user, bankAccount);
+                        && bankAccountService.isBankAccountOwnedByUser(user, bankAccount);
             }
             case TRANSFER -> {
                 User buddy = userService.getUser(recipientId);
                 yield user != null
                         && buddy != null
-                        && isBuddyInUserFriendList(user, buddy)
                         && isSufficientBalance(user, amount);
             }
         };
-    }
-
-    private boolean isBuddyInUserFriendList(User user, User buddy) {
-        return user.getBuddies().contains(buddy);
-    }
-
-    private boolean isBankAccountOwnedByUser(User user, BankAccount bankAccount) {
-        return user.getBankAccounts().contains(bankAccount);
     }
 
     private boolean isSufficientBalance(User user, BigDecimal amount) {

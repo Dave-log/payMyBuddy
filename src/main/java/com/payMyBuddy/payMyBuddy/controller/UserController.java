@@ -3,6 +3,8 @@ package com.payMyBuddy.payMyBuddy.controller;
 import com.payMyBuddy.payMyBuddy.model.BankAccount;
 import com.payMyBuddy.payMyBuddy.model.Transaction;
 import com.payMyBuddy.payMyBuddy.model.User;
+import com.payMyBuddy.payMyBuddy.service.BankAccountService;
+import com.payMyBuddy.payMyBuddy.service.TransactionService;
 import com.payMyBuddy.payMyBuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,35 +17,40 @@ import java.util.Set;
 public class UserController {
 
     private final UserService userService;
+    private final BankAccountService bankAccountService;
+    private final TransactionService transactionService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(
+            UserService userService,
+            BankAccountService bankAccountService,
+            TransactionService transactionService)
+    {
         this.userService = userService;
-    }
-
-    @GetMapping("/currentBuddies")
-    public Set<User> getCurrentUserBuddies() {
-        User currentUser = userService.getCurrentUser();
-        return currentUser.getBuddies();
+        this.bankAccountService = bankAccountService;
+        this.transactionService = transactionService;
     }
 
     @GetMapping("/currentBankAccounts")
     public List<BankAccount> getCurrentUserBankAccounts() {
         User currentUser = userService.getCurrentUser();
-        return currentUser.getBankAccounts();
+        return bankAccountService.getUserBankAccounts(currentUser);
     }
 
     @GetMapping("{id}")
+    @ResponseBody
     public User getUser(@PathVariable long id) {
         return userService.getUser(id);
     }
 
     @GetMapping("all")
+    @ResponseBody
     public Iterable<User> getUsers() {
         return userService.getUsers();
     }
 
     @GetMapping("{id}/buddies")
+    @ResponseBody
     public Set<User> getUserBuddies(@PathVariable long id) {
         return userService.getUser(id).getBuddies();
     }
@@ -64,9 +71,10 @@ public class UserController {
         userService.removeBuddy(email);
     }
 
-    @GetMapping("/transactions")
+    @GetMapping("/currentTransactions")
+    @ResponseBody
     public List<Transaction> getUserTransactions() {
         User currentUser = userService.getCurrentUser();
-        return currentUser.getTransactions();
+        return transactionService.getUserTransactions(currentUser);
     }
 }
