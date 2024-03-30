@@ -120,14 +120,13 @@ public class BankAccountServiceTest {
         newBankAccount.setBic(bankAccountRegisterDTO.bic());
         newBankAccount.setBankName(bankAccountRegisterDTO.bankName());
 
-        currentUser.getBankAccounts().add(newBankAccount);
+        newBankAccount.setUser(currentUser);
 
         // Act
         bankAccountService.addBankAccount(bankAccountRegisterDTO);
 
         // Assert
         verify(bankAccountRepository).save(newBankAccount);
-        verify(userService).update(currentUser);
     }
 
     @Test

@@ -68,6 +68,10 @@ public class TransactionService {
             throw new InvalidTransactionException("Recipient user is not your buddy");
         }
 
+        if (isNotPositiveAmount(buddyTransactionRequestDTO.amount())) {
+            throw new InvalidTransactionException("Amount must be strictly positive");
+        }
+
         BuddyTransaction buddyTransaction = new BuddyTransaction();
         buddyTransaction.setDescription(buddyTransactionRequestDTO.description());
         buddyTransaction.setType(TransactionType.TRANSFER);
@@ -85,10 +89,6 @@ public class TransactionService {
 
         if (!bankAccountService.isBankAccountOwnedByUser(currentUser, bankAccount)) {
             throw new InvalidTransactionException("Recipient is not your bank account");
-        }
-
-        if (isNotPositiveAmount(bankTransactionRequestDTO.amount())) {
-            throw new InvalidTransactionException("Amount must be strictly positive");
         }
 
         BankTransaction bankTransaction = new BankTransaction();
