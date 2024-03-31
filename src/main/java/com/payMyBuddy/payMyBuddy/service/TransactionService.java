@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -40,23 +41,19 @@ public class TransactionService {
         this.bankAccountService = bankAccountService;
     }
 
-    public Page<TransferDTO> getTransferDTOs(int page, int pageSize) {
+    public Page<TransferDTO> getTransferDTOs(Pageable pageable) {
         User currentUser = userService.getCurrentUser();
-        List<Transaction> userTransactions = transactionRepository.findBySender(currentUser).stream()
-                .filter(transaction -> transaction.getType() == TransactionType.TRANSFER)
-                .toList();
+        Page<Transaction> transactionPage = transactionRepository.findBySenderAndType(
+                currentUser,
+                TransactionType.TRANSFER,
+                pageable);
 
-        int start = page * pageSize;
-        int end = Math.min(start + pageSize, userTransactions.size());
-        List<Transaction> paginatedTransactions = userTransactions.subList(start, end);
-
-        return new PageImpl<>(paginatedTransactions).map(transaction -> {
+        return transactionPage.map(transaction -> {
             User recipient = userService.getUser(transaction.getRecipientId());
-            return new TransferDTO(
-                    recipient.getFirstName() + " " + recipient.getLastName(),
-                    transaction.getDescription(),
-                    transaction.getAmount()
-            );
+            String connection = recipient.getFirstName() + " " + recipient.getLastName();
+            String description = transaction.getDescription();
+            BigDecimal amount = transaction.getAmount();
+            return new TransferDTO(connection, description, amount);
         });
     }
 

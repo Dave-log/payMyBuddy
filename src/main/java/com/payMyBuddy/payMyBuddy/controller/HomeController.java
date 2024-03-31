@@ -6,6 +6,7 @@ import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.service.TransactionService;
 import com.payMyBuddy.payMyBuddy.service.UserService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,8 +48,9 @@ public class HomeController {
         model.addAttribute("currentPage", "transfer");
         model.addAttribute("buddyList", buddyList);
 
-        Page<TransferDTO> transferPage = transactionService.getTransferDTOs(page, pageSize);
+        Page<TransferDTO> transferPage = transactionService.getTransferDTOs(PageRequest.of(page, pageSize));
         model.addAttribute("transferPage", transferPage);
+        model.addAttribute("pageSize", pageSize);
 
         return "transfer_page";
     }

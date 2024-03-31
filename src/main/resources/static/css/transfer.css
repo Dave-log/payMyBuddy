@@ -115,14 +115,8 @@ table {
     color: white;
 }
 
-.container2-body th {
-    padding: 0;
-    margin: 0;
-}
-
-.container2-body td {
-    padding: 0;
-    margin: 0;
+tr {
+    height: calc(25vh/4);
 }
 
 .pagination {

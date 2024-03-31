@@ -65,7 +65,26 @@
                 </table>
             </div>
             <div class="pagination">
-
+                <a th:if="${transferPage.hasPrevious()}"
+                        th:href="@{/transfer(page=0, pageSize=${pageSize})}">
+                    <button>First</button>
+                </a>
+                <a th:if="${transferPage.hasPrevious()}"
+                        th:href="@{/transfer(page=${transferPage.previousPageable().pageNumber}, pageSize=${pageSize})}">
+                    <button>Previous</button>
+                </a>
+                <span>
+                    Page <span th:text="${transferPage.number + 1}">1</span>
+                    of <span th:text="${transferPage.totalPages}">1</span>
+                </span>
+                <a th:if="${transferPage.hasNext()}"
+                        th:href="@{/transfer(page=${transferPage.nextPageable().pageNumber}, pageSize=${pageSize})}">
+                    <button>Next</button>
+                </a>
+                <a th:if="${transferPage.hasNext()}"
+                        th:href="@{/transfer(page=${transferPage.totalPages - 1}, pageSize=${pageSize})}">
+                    <button>Last</button>
+                </a>
             </div>
         </section>
     </div>
