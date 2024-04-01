@@ -7,7 +7,12 @@ import com.payMyBuddy.payMyBuddy.service.BankAccountService;
 import com.payMyBuddy.payMyBuddy.service.TransactionService;
 import com.payMyBuddy.payMyBuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Set;
@@ -38,25 +43,24 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    @ResponseBody
     public User getUser(@PathVariable long id) {
         return userService.getUser(id);
     }
 
     @GetMapping("all")
-    @ResponseBody
     public Iterable<User> getUsers() {
         return userService.getUsers();
     }
 
     @GetMapping("{id}/buddies")
-    @ResponseBody
     public Set<User> getUserBuddies(@PathVariable long id) {
         return userService.getUser(id).getBuddies();
     }
 
     @PutMapping()
-    public User update(@RequestBody User user) { return userService.update(user); }
+    public User update(@RequestBody User user) {
+        return userService.update(user);
+    }
 
     @DeleteMapping("{id}")
     public void delete(@PathVariable long id) { userService.delete(id);}

@@ -55,13 +55,6 @@ public class HomeController {
         return "transfer_page";
     }
 
-    @GetMapping("/profile")
-    public String getProfilePage(Model model) {
-        model.addAttribute("parentPages", new String[]{"home"});
-        model.addAttribute("currentPage", "profile");
-        return "profile_page";
-    }
-
     @GetMapping("/contact")
     public String getContactPage(Model model) {
         model.addAttribute("parentPages", new String[]{"home"});

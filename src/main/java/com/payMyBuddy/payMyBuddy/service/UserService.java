@@ -1,6 +1,7 @@
 package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.dto.BuddyDTO;
+import com.payMyBuddy.payMyBuddy.dto.ProfileUpdateDTO;
 import com.payMyBuddy.payMyBuddy.exceptions.BuddyAlreadyInBuddyListException;
 import com.payMyBuddy.payMyBuddy.exceptions.BuddyNotFoundInBuddyListException;
 import com.payMyBuddy.payMyBuddy.exceptions.UserNotFoundException;
@@ -9,6 +10,7 @@ import com.payMyBuddy.payMyBuddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,10 +21,12 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User getCurrentUser() {
@@ -92,14 +96,38 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public void updatePassword(ProfileUpdateDTO profileUpdateDTO) {
+        User currentUser = getCurrentUser();
+
+        // check if current password is correct
+        if (!passwordEncoder.matches(profileUpdateDTO.currentPassword(), currentUser.getPassword())) {
+            throw new IllegalArgumentException("Incorrect current password");
+        }
+        // check if new password and current password are different
+        if (passwordEncoder.matches(profileUpdateDTO.newPassword(), currentUser.getPassword())) {
+            throw new IllegalArgumentException("New password must be different from the current password");
+        }
+        // check if new password and confirm password are the same
+        if (!profileUpdateDTO.newPassword().equals(profileUpdateDTO.confirmPassword())) {
+            throw new IllegalArgumentException("New password and confirm password do not match");
+        }
+
+        String encodedPassword = passwordEncoder.encode(profileUpdateDTO.newPassword());
+        currentUser.setPassword(encodedPassword);
+
+        userRepository.save(currentUser);
+    }
+
     public User update(User user) {
         User userToUpdate = getUser(user.getEmail());
         userToUpdate.setFirstName(user.getFirstName());
         userToUpdate.setLastName(user.getLastName());
-        userToUpdate.setPassword(user.getPassword());
-        userToUpdate.setBalance(user.getBalance());
+        userToUpdate.setEmail(user.getEmail());
+        userToUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
         userToUpdate.setRole(user.getRole());
+        userToUpdate.setBalance(user.getBalance());
         userToUpdate.setBuddies(user.getBuddies());
+
         return userRepository.save(userToUpdate);
     }
 

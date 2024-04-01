@@ -14,6 +14,9 @@
         <p th:if="${param.success}">
             You successfully registered. Please use your credentials to log in.
         </p>
+        <p th:if="*{param.passwordChanged}">
+            Your password has been modified successfully. Please log in again.
+        </p>
         <form th:action="@{/login}" method="post">
             <label for="email"></label>
             <input id="email" name="email" type="email" placeholder="Email" required/>
