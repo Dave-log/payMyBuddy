@@ -1,5 +1,6 @@
 package com.payMyBuddy.payMyBuddy.controller;
 
+import com.payMyBuddy.payMyBuddy.dto.PasswordUpdateDTO;
 import com.payMyBuddy.payMyBuddy.dto.ProfileUpdateDTO;
 import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.service.UserService;
@@ -27,20 +28,33 @@ public class ProfileController {
         model.addAttribute("parentPages", new String[]{"home"});
         model.addAttribute("currentPage", "profile");
         model.addAttribute("currentUser", currentUser);
+        model.addAttribute("profileUpdateDTO", new ProfileUpdateDTO("",""));
 
         return "profile_page";
     }
 
-    @PostMapping()
-    public String updatePassword(
+    @PostMapping("/update-profile")
+    public String updateProfile(
             @ModelAttribute("profileUpdateDTO") ProfileUpdateDTO profileUpdateDTO,
+            Model model) {
+        User currentUser = userService.getCurrentUser();
+        model.addAttribute("currentUser", currentUser);
+
+        userService.updateProfile(profileUpdateDTO);
+
+        return "profile_page";
+    }
+
+    @PostMapping("/update-password")
+    public String updatePassword(
+            @ModelAttribute("passwordUpdateDTO") PasswordUpdateDTO passwordUpdateDTO,
             Model model,
             HttpServletRequest request) {
         User currentUser = userService.getCurrentUser();
         model.addAttribute("currentUser", currentUser);
 
         try {
-            userService.updatePassword(profileUpdateDTO);
+            userService.updatePassword(passwordUpdateDTO);
             HttpSession session = request.getSession(false);
             if (session != null) {
                 session.invalidate();

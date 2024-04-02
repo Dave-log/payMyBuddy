@@ -1,6 +1,7 @@
 package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.dto.BuddyDTO;
+import com.payMyBuddy.payMyBuddy.dto.PasswordUpdateDTO;
 import com.payMyBuddy.payMyBuddy.dto.ProfileUpdateDTO;
 import com.payMyBuddy.payMyBuddy.exceptions.BuddyAlreadyInBuddyListException;
 import com.payMyBuddy.payMyBuddy.exceptions.BuddyNotFoundInBuddyListException;
@@ -96,23 +97,37 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void updatePassword(ProfileUpdateDTO profileUpdateDTO) {
+    public void updateProfile(ProfileUpdateDTO profileUpdateDTO) {
+        User currentUser = getCurrentUser();
+
+        if (!profileUpdateDTO.firstNameInput().isEmpty()) {
+            currentUser.setFirstName(profileUpdateDTO.firstNameInput());
+        }
+
+        if (!profileUpdateDTO.lastNameInput().isEmpty()) {
+            currentUser.setLastName(profileUpdateDTO.lastNameInput());
+        }
+
+        userRepository.save(currentUser);
+    }
+
+    public void updatePassword(PasswordUpdateDTO passwordUpdateDTO) {
         User currentUser = getCurrentUser();
 
         // check if current password is correct
-        if (!passwordEncoder.matches(profileUpdateDTO.currentPassword(), currentUser.getPassword())) {
+        if (!passwordEncoder.matches(passwordUpdateDTO.currentPassword(), currentUser.getPassword())) {
             throw new IllegalArgumentException("Incorrect current password");
         }
         // check if new password and current password are different
-        if (passwordEncoder.matches(profileUpdateDTO.newPassword(), currentUser.getPassword())) {
+        if (passwordEncoder.matches(passwordUpdateDTO.newPassword(), currentUser.getPassword())) {
             throw new IllegalArgumentException("New password must be different from the current password");
         }
         // check if new password and confirm password are the same
-        if (!profileUpdateDTO.newPassword().equals(profileUpdateDTO.confirmPassword())) {
+        if (!passwordUpdateDTO.newPassword().equals(passwordUpdateDTO.confirmPassword())) {
             throw new IllegalArgumentException("New password and confirm password do not match");
         }
 
-        String encodedPassword = passwordEncoder.encode(profileUpdateDTO.newPassword());
+        String encodedPassword = passwordEncoder.encode(passwordUpdateDTO.newPassword());
         currentUser.setPassword(encodedPassword);
 
         userRepository.save(currentUser);
