@@ -82,19 +82,25 @@ public class TransactionService {
 
     public Transaction makeBankTransaction(BankTransactionRequestDTO bankTransactionRequestDTO) {
         User currentUser = userService.getCurrentUser();
-        BankAccount bankAccount = bankAccountService.getBankAccount(bankTransactionRequestDTO.id());
+        BankAccount bankAccount = bankAccountService.getBankAccount(bankTransactionRequestDTO.getId());
 
         if (!bankAccountService.isBankAccountOwnedByUser(currentUser, bankAccount)) {
             throw new InvalidTransactionException("Recipient is not your bank account");
         }
 
         BankTransaction bankTransaction = new BankTransaction();
-        bankTransaction.setDescription(bankTransactionRequestDTO.description());
-        bankTransaction.setType(bankTransactionRequestDTO.type());
+        bankTransaction.setDescription(bankTransactionRequestDTO.getDescription());
+
+        if (bankTransactionRequestDTO.getType().equals(TransactionType.DEPOSIT.name())) {
+            bankTransaction.setType(TransactionType.DEPOSIT);
+        } else {
+            bankTransaction.setType(TransactionType.WITHDRAWAL);
+        }
+
         bankTransaction.setSender(currentUser);
         bankTransaction.setRecipientBank(bankAccount);
-        bankTransaction.setAmount(bankTransactionRequestDTO.amount());
-        bankTransaction.setFeePaidBySender(bankTransactionRequestDTO.feePaidBySender());
+        bankTransaction.setAmount(bankTransactionRequestDTO.getAmount());
+        bankTransaction.setFeePaidBySender(bankTransactionRequestDTO.isFeePaidBySender());
 
         return performTransaction(bankTransaction);
     }

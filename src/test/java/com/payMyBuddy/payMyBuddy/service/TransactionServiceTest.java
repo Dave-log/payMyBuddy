@@ -117,7 +117,7 @@ public class TransactionServiceTest {
         BankTransactionRequestDTO requestDTO = new BankTransactionRequestDTO(
                 1L,
                 "Description",
-                TransactionType.DEPOSIT,
+                "DEPOSIT",
                 new BigDecimal("100.00"),
                 true);
         User currentUser = new User();
@@ -147,7 +147,7 @@ public class TransactionServiceTest {
         BankTransactionRequestDTO requestDTO = new BankTransactionRequestDTO(
                 1L,
                 "Description",
-                TransactionType.DEPOSIT,
+                "DEPOSIT",
                 new BigDecimal("100.00"),
                 true);
         User currentUser = new User();
@@ -169,7 +169,7 @@ public class TransactionServiceTest {
         BankTransactionRequestDTO requestDTO = new BankTransactionRequestDTO(
                 1L,
                 "Description",
-                TransactionType.DEPOSIT,
+                "DEPOSIT",
                 BigDecimal.ZERO,
                 true);
         User currentUser = new User();

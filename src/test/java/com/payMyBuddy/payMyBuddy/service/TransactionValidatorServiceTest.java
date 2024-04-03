@@ -208,26 +208,6 @@ public class TransactionValidatorServiceTest {
         assertTrue(validatorService.isValidTransaction(transfer, amount));
     }
 
-//    @Test
-//    public void testIsSufficientBalance() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-//        // Arrange
-//        User user = new User();
-//        user.setBalance(new BigDecimal("100.00"));
-//        BigDecimal amount1 = new BigDecimal("50.00");
-//        BigDecimal amount2 = new BigDecimal("150.00");
-//        BigDecimal amount3 = new BigDecimal("100.00");
-//
-//        // Act
-//        boolean result1 = (boolean) getIsSufficientBalanceMethod().invoke(validatorService, user, amount1);
-//        boolean result2 = (boolean) getIsSufficientBalanceMethod().invoke(validatorService, user, amount2);
-//        boolean result3 = (boolean) getIsSufficientBalanceMethod().invoke(validatorService, user, amount3);
-//
-//        // Assert
-//        assertTrue(result1);
-//        assertFalse(result2);
-//        assertTrue(result3);
-//    }
-
     private User createTestUser() {
         User user = new User();
         user.setId(1L);

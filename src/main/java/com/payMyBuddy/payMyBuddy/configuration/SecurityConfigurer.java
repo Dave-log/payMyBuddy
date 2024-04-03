@@ -34,8 +34,9 @@ public class SecurityConfigurer {
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .requestMatchers("/","/login", "/register", "/error").permitAll()
-                    .requestMatchers("/home", "/contact", "/profile", "/transfer", "add-buddy", "add-bank-account").hasRole("USER")
+                    .requestMatchers("/home", "/contact", "/profile", "/transfer").hasRole("USER")
                     .requestMatchers("/user/**").hasRole("USER")
+                    .requestMatchers("/profile/**").hasRole("USER")
                     .requestMatchers("/bank-account/**").hasRole("USER")
                     .requestMatchers("/transactions/**").hasRole("USER")
                     .anyRequest().authenticated())

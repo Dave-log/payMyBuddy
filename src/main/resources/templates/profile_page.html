@@ -93,60 +93,73 @@
         </div>
 
         <div id="bank-accounts" class="tab-content" style="display: none;">
-            <h2>Your Bank Accounts</h2>
-            <div id="bank-accounts-container" class="scrollable">
-                <div class="bank-accounts" th:each="account : ${bankAccounts}"
-                     th:text="${account.accountType}"
-                     th:attr="data-id=${account.id}"
-                     th:onclick="'selectBankAccount(this)'">
-                </div>
-            </div>
+            <h3>Bank Transaction</h3>
+            <div id="bank-transaction-container">
+                <form th:action="@{/profile/bank-transaction}" th:object="${bankTransactionRequestDTO}" method="post">
+                    <label for="bankAccount"></label>
+                    <select id="bankAccount" name="id" required>
+                        <option value="" disabled selected>Select Bank Account</option>
+                        <option th:each="account: ${bankAccounts}"
+                                th:value="${account.id}"
+                                th:text="${account.accountType + ' - ' + account.bankName}">
+                        </option>
+                    </select>
 
-            <form id="add-bank-account-form">
-                <h3>Add Bank Account</h3>
-                <label for="accountType">Account Type:</label>
-                <input type="text" id="accountType" name="accountType" required>
+                    <label for="description">Description:</label>
+                    <input type="text" id="description" name="description">
 
-                <label for="bankName">Bank Name:</label>
-                <input type="text" id="bankName" name="bankName" required>
-
-                <label for="accountNumber">Account Number:</label>
-                <input type="text" id="accountNumber" name="accountNumber" required>
-
-                <label for="iban">IBAN:</label>
-                <input type="text" id="iban" name="iban" required>
-
-                <label for="bic">BIC:</label>
-                <input type="text" id="bic" name="bic" required>
-
-                <button type="submit">Add Bank Account</button>
-            </form>
-
-            <div id="bank-account-details">
-                <p id="selected-account-type"></p>
-                <p id="selected-bank-name"></p>
-                <p id="selected-account-number"></p>
-                <p id="selected-iban"></p>
-                <p id="selected-bic"></p>
-
-                <form id="transaction-form" style="display: none;">
-                    <h3>Make a Transaction</h3>
-                    <label for="transactionType">Transaction Type:</label>
-                    <select id="transactionType" name="transactionType" required>
+                    <label for="type">Transaction Type:</label>
+                    <select id="type" name="type" required>
+                        <option value="" disabled selected>Select Transaction Type</option>
                         <option value="DEPOSIT">Deposit</option>
                         <option value="WITHDRAWAL">Withdrawal</option>
                     </select>
 
                     <label for="amount">Amount:</label>
-                    <input type="number" id="amount" name="amount" required>
+                    <input type="number" id="amount" name="amount" step="0.01" th:min="0" placeholder="0€" required>
 
-                    <input type="checkbox" id="feeCheckbox" name="feeCheckbox" checked>
-                    <label for="feeCheckbox">You pay the fee</label>
+                    <label for="feeCheckbox">You pay the fee:</label>
+                    <input type="checkbox", id="feeCheckbox" name="feeCheckbox" checked>
 
                     <button type="submit">Proceed</button>
                 </form>
+            </div>
+            <h3>Add Bank Account</h3>
+            <div id="add-bank-container">
+                <form th:action="@{/profile/add-bank-account}" th:object="${bankAccountRegisterDTO}" method="post">
+                    <label for="accountType">Account Type:</label>
+                    <input type="text" id="accountType" name="accountType" required>
 
-                <button id="remove-bank-account-btn" style="display: none;">Remove Bank Account</button>
+                    <label for="accountNumber">Account Number:</label>
+                    <input type="text" id="accountNumber" name="accountNumber" required>
+
+                    <label for="iban">IBAN:</label>
+                    <input type="text" id="iban" name="iban" required>
+
+                    <label for="bic">BIC:</label>
+                    <input type="text" id="bic" name="bic" required>
+
+                    <label for="bankName">Bank Name:</label>
+                    <input type="text" id="bankName" name="bankName" required>
+
+                    <button type="submit">Add Bank Account</button>
+                </form>
+            </div>
+            <h3>Remove Bank Account</h3>
+            <div id="remove-bank-container">
+                <form th:action="@{/profile/remove-bank-account}" method="post">
+                    <label for="account">Select Bank Account:</label>
+                    <select id="account" name="iban" required>
+                        <option value="" disabled selected>Select Bank Account</option>
+                        <option
+                                th:each="account : ${bankAccounts}"
+                                th:value="${account.iban}"
+                                th:text="${account.accountType + ' - ' + account.bankName}">
+                        </option>
+                    </select>
+
+                    <button type="submit">Remove Bank Account</button>
+                </form>
             </div>
         </div>
 

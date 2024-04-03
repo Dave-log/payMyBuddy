@@ -60,16 +60,6 @@ public class UserController {
     @DeleteMapping("{id}")
     public void delete(@PathVariable long id) { userService.delete(id);}
 
-    @PostMapping("add-buddy/{email}")
-    public void addBuddy(@PathVariable String email) {
-        userService.addBuddy(email);
-    }
-
-    @DeleteMapping("remove-buddy/{email}")
-    public void removeBuddy(@PathVariable String email) {
-        userService.removeBuddy(email);
-    }
-
     @GetMapping("/currentTransactions")
     @ResponseBody
     public List<Transaction> getUserTransactions() {

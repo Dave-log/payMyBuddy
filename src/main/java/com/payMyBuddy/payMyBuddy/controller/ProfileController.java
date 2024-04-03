@@ -1,11 +1,10 @@
 package com.payMyBuddy.payMyBuddy.controller;
 
-import com.payMyBuddy.payMyBuddy.dto.BuddyDTO;
-import com.payMyBuddy.payMyBuddy.dto.PasswordUpdateDTO;
-import com.payMyBuddy.payMyBuddy.dto.ProfileUpdateDTO;
+import com.payMyBuddy.payMyBuddy.dto.*;
 import com.payMyBuddy.payMyBuddy.model.BankAccount;
 import com.payMyBuddy.payMyBuddy.model.User;
 import com.payMyBuddy.payMyBuddy.service.BankAccountService;
+import com.payMyBuddy.payMyBuddy.service.TransactionService;
 import com.payMyBuddy.payMyBuddy.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -21,10 +20,15 @@ public class ProfileController {
 
     private final UserService userService;
     private final BankAccountService bankAccountService;
+    private final TransactionService transactionService;
 
-    public ProfileController(UserService userService, BankAccountService bankAccountService) {
+    public ProfileController(
+            UserService userService,
+            BankAccountService bankAccountService,
+            TransactionService transactionService) {
         this.userService = userService;
         this.bankAccountService = bankAccountService;
+        this.transactionService = transactionService;
     }
 
     @GetMapping()
@@ -38,6 +42,7 @@ public class ProfileController {
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("buddies", buddies);
         model.addAttribute("bankAccounts", bankAccounts);
+
         model.addAttribute("profileUpdateDTO", new ProfileUpdateDTO("",""));
         model.addAttribute("selectedBuddy", new BuddyDTO("", "", ""));
 
@@ -87,5 +92,35 @@ public class ProfileController {
     public String removeBuddy(@RequestParam("buddyEmail") String buddyEmail) {
         userService.removeBuddy(buddyEmail);
         return "redirect:/profile#buddies";
+    }
+
+    @PostMapping("/bank-transaction")
+    public String makeBankTransaction(
+            @ModelAttribute("bankTransactionRequestDTO") BankTransactionRequestDTO bankTransactionRequestDTO,
+            Model model) {
+        User currentUser = userService.getCurrentUser();
+        model.addAttribute("currentUser", currentUser);
+
+        transactionService.makeBankTransaction(bankTransactionRequestDTO);
+
+        return "redirect:/profile#bank-accounts";
+    }
+
+    @PostMapping("/add-bank-account")
+    public String addBankAccount(
+            @ModelAttribute("BankAccountRegisterDTO")BankAccountRegisterDTO bankAccountRegisterDTO,
+            Model model) {
+        User currentUser = userService.getCurrentUser();
+        model.addAttribute("currentUser", currentUser);
+
+        bankAccountService.addBankAccount(bankAccountRegisterDTO);
+
+        return "redirect:/profile#bank-accounts";
+    }
+
+    @PostMapping("/remove-bank-account")
+    public String removeBankAccount(@RequestParam("iban") String iban) {
+        bankAccountService.removeBankAccount(iban);
+        return "redirect:/profile#bank-accounts";
     }
 }
