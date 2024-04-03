@@ -15,8 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -43,13 +45,12 @@ public class UserService {
 
     public List<BuddyDTO> getBuddyDTOs() {
         User currentUser = getCurrentUser();
-//        List<User> buddyList = new ArrayList<>(currentUser.getBuddies());
-        List<User> buddyList = userRepository.findBuddiesByUserId(currentUser.getId());
-        List<BuddyDTO> buddyDTOs = new ArrayList<>();
-        for (User buddy : buddyList) {
-            buddyDTOs.add(new BuddyDTO(buddy.getEmail(), buddy.getFirstName(), buddy.getLastName()));
-        }
-        return buddyDTOs;
+        List<User> buddyList = new ArrayList<>(currentUser.getBuddies());
+
+        return buddyList.stream()
+                .map(buddy -> new BuddyDTO(buddy.getEmail(), buddy.getFirstName(), buddy.getLastName()))
+                .sorted(Comparator.comparing(BuddyDTO::lastName))
+                .collect(Collectors.toList());
     }
 
     public void addBuddy(String buddyEmail) {
@@ -60,7 +61,6 @@ public class UserService {
         } else {
             currentUser.getBuddies().add(buddyToAdd);
             userRepository.save(currentUser);
-            System.out.println("buddy saved");
         }
     }
 
@@ -76,8 +76,8 @@ public class UserService {
         }
     }
 
-    public boolean isRecipientBuddyOfCurrentUser(long currentUserId, long recipientId) {
-        return userRepository.isRecipientBuddyOfCurrentUser(currentUserId, recipientId);
+    public boolean isRecipientBuddyOfCurrentUser(User currentUser, User recipient) {
+        return currentUser.getBuddies().contains(recipient);
     }
 
     public User getUser(long id) {

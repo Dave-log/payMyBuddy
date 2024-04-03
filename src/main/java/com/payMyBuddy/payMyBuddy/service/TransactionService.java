@@ -61,7 +61,7 @@ public class TransactionService {
         String recipientEmail = buddyTransactionRequestDTO.recipientEmail();
         User recipientUser = userService.getUser(recipientEmail);
 
-        if (!userService.isRecipientBuddyOfCurrentUser(currentUser.getId(), recipientUser.getId())) {
+        if (!userService.isRecipientBuddyOfCurrentUser(currentUser, recipientUser)) {
             throw new InvalidTransactionException("Recipient user is not your buddy");
         }
 

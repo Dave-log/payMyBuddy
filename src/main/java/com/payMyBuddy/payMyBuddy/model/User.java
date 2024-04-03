@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.*;
 import com.payMyBuddy.payMyBuddy.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -15,7 +17,9 @@ import java.util.*;
 @DynamicUpdate
 @Entity
 @Table(name = "user", uniqueConstraints = {@UniqueConstraint(name = "unique email", columnNames = {"email"})})
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+//@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+@ToString(exclude = "buddies")
+@EqualsAndHashCode(exclude = "buddies")
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,10 +38,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private RoleType role = RoleType.USER;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    //@JsonIgnoreProperties({"buddies", "role", "password", "id"})
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_user",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "buddy_id") )
-    @Fetch(FetchMode.JOIN)
+            inverseJoinColumns = @JoinColumn(name = "buddy_id"))
     private Set<User> buddies = new HashSet<>();
 }

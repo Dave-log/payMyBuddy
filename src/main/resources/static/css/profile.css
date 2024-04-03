@@ -1,3 +1,32 @@
+.tabs-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.tabs-container .tab-content.active {
+    display: flex;
+    flex: 1;
+
+}
+
+.tabs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tabs li {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.tabs li.active {
+    background-color: #ccc;
+}
+
 .tab-content {
     transition: opacity 0.3s ease-in-out;
     opacity: 1;
@@ -5,4 +34,12 @@
 
 .tab-content.hidden {
     opacity: 0;
+}
+
+#buddies-container,
+#bank-accounts-container {
+    height: 200px;
+    width: 10%;
+    overflow-y: auto;
+    border: 1px solid;
 }

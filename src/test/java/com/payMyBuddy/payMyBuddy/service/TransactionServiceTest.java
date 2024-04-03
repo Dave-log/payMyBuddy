@@ -52,7 +52,7 @@ public class TransactionServiceTest {
         currentUser.setBuddies(Set.of(buddy));
 
         when(userService.getUser("buddy@example.com")).thenReturn(buddy);
-        when(userService.isRecipientBuddyOfCurrentUser(currentUser.getId(), buddy.getId())).thenReturn(true);
+        when(userService.isRecipientBuddyOfCurrentUser(currentUser, buddy)).thenReturn(true);
         when(calculatorService.calculateFee(any(BigDecimal.class))).thenReturn(BigDecimal.ZERO);
         when(validatorService.isValidTransaction(any(BuddyTransaction.class), any(BigDecimal.class))).thenReturn(true);
 

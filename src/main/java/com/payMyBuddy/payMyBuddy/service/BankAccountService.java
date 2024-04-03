@@ -37,7 +37,7 @@ public class BankAccountService {
         return bankAccountRepository.findByUser(user);
     }
 
-    public Iterable<BankAccount> getBankAccounts() {
+    public List<BankAccount> getBankAccounts() {
         return bankAccountRepository.findAll();
     }
 

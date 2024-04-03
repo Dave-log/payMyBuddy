@@ -7,6 +7,7 @@ import com.payMyBuddy.payMyBuddy.service.TransactionService;
 import com.payMyBuddy.payMyBuddy.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import java.util.List;
 @Controller
 public class HomeController {
 
+    private BCryptPasswordEncoder passwordEncoder;
     private final UserService userService;
     private final TransactionService transactionService;
 
@@ -60,19 +62,5 @@ public class HomeController {
         model.addAttribute("parentPages", new String[]{"home"});
         model.addAttribute("currentPage", "contact");
         return "contact_page";
-    }
-
-    @GetMapping("/add-buddy")
-    public String getAddBuddyPage(Model model) {
-        model.addAttribute("parentPages", new String[]{"home", "profile"});
-        model.addAttribute("currentPage", "add-buddy");
-        return "addBuddy_page";
-    }
-
-    @GetMapping("/add-bank-account")
-    public String getAddBankAccountPage(Model model) {
-        model.addAttribute("parentPages", new String[]{"home", "profile"});
-        model.addAttribute("currentPage", "add-bank-account");
-        return "addBankAccount_page";
     }
 }

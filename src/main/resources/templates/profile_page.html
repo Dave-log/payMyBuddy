@@ -20,93 +20,139 @@
         <p>Your balance: <span th:text="${currentUser.balance}"></span></p>
     </div>
 
-    <div>
-        <ul>
-            <li><a href="#user-info" onclick="showTab('user-info')">Your User Account</a></li>
-            <li><a href="#buddies" onclick="showTab('buddies')">Your Buddies</a></li>
-            <li><a href="#bank-accounts" onclick="showTab('bank-accounts')">Your Bank Accounts</a></li>
-        </ul>
-    </div>
+    <div class="tabs-container">
+        <div>
+            <ul class="tabs">
+                <li data-tab="user-info"><a href="#user-info" onclick="showTab('user-info')">Your User Account</a></li>
+                <li data-tab="buddies"><a href="#buddies" onclick="showTab('buddies')">Your Buddies</a></li>
+                <li data-tab="bank-accounts"><a href="#bank-accounts" onclick="showTab('bank-accounts')">Your Bank Accounts</a></li>
+            </ul>
+        </div>
 
-    <div id="user-info" class="tab-content" style="display: block;">
-        <form th:action="@{/profile/update-profile}" th:object="${profileUpdateDTO}" method="post">
-            <h2>User Information</h2>
-            <p>First name:
-                <span id="firstNameText" class="editable-text" th:text="${currentUser.firstName}"></span>
-                <label for="firstNameInput"></label>
-                <input type="text" id="firstNameInput" name="firstNameInput" class="editable-input" th:placeholder="${currentUser.firstName}" style="display:none">
-                <button type="button" onclick="toggleEdit('firstName')">Edit</button>
-            </p>
-            <p>Last name:
-                <span id="lastNameText" class="editable-text" th:text="${currentUser.lastName}"></span>
-                <label for="lastNameInput"></label>
-                <input type="text" id="lastNameInput" name="lastNameInput" class="editable-input" th:placeholder="${currentUser.lastName}" style="display:none">
-                <button type="button" onclick="toggleEdit('lastName')">Edit</button>
-            </p>
-            <p>Email: <span th:text="${currentUser.email}"></span></p>
-            <button type="submit">Save changes</button>
-        </form>
+        <div id="user-info" class="tab-content">
+            <form th:action="@{/profile/update-profile}" th:object="${profileUpdateDTO}" method="post">
+                <h2>User Information</h2>
+                <p>First name:
+                    <span id="firstNameText" class="editable-text" th:text="${currentUser.firstName}"></span>
+                    <label for="firstNameInput"></label>
+                    <input type="text" id="firstNameInput" name="firstNameInput" class="editable-input" th:placeholder="${currentUser.firstName}" style="display:none">
+                    <button type="button" onclick="toggleEdit('firstName')">Edit</button>
+                </p>
+                <p>Last name:
+                    <span id="lastNameText" class="editable-text" th:text="${currentUser.lastName}"></span>
+                    <label for="lastNameInput"></label>
+                    <input type="text" id="lastNameInput" name="lastNameInput" class="editable-input" th:placeholder="${currentUser.lastName}" style="display:none">
+                    <button type="button" onclick="toggleEdit('lastName')">Edit</button>
+                </p>
+                <p>Email: <span th:text="${currentUser.email}"></span></p>
+                <button type="submit">Save changes</button>
+            </form>
 
-        <form th:action="@{/profile/update-password}" th:object="${passwordUpdateDTO}" method="post">
-            <h2>Change Password</h2>
-            <label for="currentPassword">Current Password:</label>
-            <input type="password" id="currentPassword" name="currentPassword" required>
+            <form th:action="@{/profile/update-password}" th:object="${passwordUpdateDTO}" method="post">
+                <h2>Change Password</h2>
+                <label for="currentPassword">Current Password:</label>
+                <input type="password" id="currentPassword" name="currentPassword" required>
 
-            <label for="newPassword">New Password:</label>
-            <input type="password" id="newPassword" name="newPassword" required>
+                <label for="newPassword">New Password:</label>
+                <input type="password" id="newPassword" name="newPassword" required>
 
-            <label for="confirmPassword">Confirm New Password:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <label for="confirmPassword">Confirm New Password:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
 
-            <button type="submit">Change Password</button>
-            <div th:if="${errorMessage}" class="alert-danger" role="alert">
-                <p th:text="${errorMessage}"></p>
+                <button type="submit">Change Password</button>
+                <div th:if="${errorMessage}" class="alert-danger" role="alert">
+                    <p th:text="${errorMessage}"></p>
+                </div>
+            </form>
+        </div>
+
+        <div id="buddies" class="tab-content" style="display: none;">
+            <h2>Your Buddies</h2>
+            <div id="buddies-container" class="scrollable">
+                <div class="buddy" th:each="buddy : ${buddies}"
+                     th:text="${buddy.firstName} + ' ' + ${buddy.lastName}"
+                     th:attr="data-email=${buddy.email}"
+                     th:onclick="'selectBuddy(this)'">
+                </div>
             </div>
-        </form>
+
+            <div id="buddy-details">
+                <p id="selected-buddy-name"></p>
+                <p id="selected-buddy-email"></p>
+                <form th:action="@{/profile/remove-buddy}" id="remove-buddy-form" method="post" style="display: none;">
+                    <input type="hidden" name="buddyEmail" id="buddy-email-input">
+                    <button type="submit">Remove Buddy</button>
+                </form>
+            </div>
+
+            <form th:action="@{/profile/add-buddy}" id="add-buddy-form" method="post">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <button type="submit">Add Buddy</button>
+            </form>
+        </div>
+
+        <div id="bank-accounts" class="tab-content" style="display: none;">
+            <h2>Your Bank Accounts</h2>
+            <div id="bank-accounts-container" class="scrollable">
+                <div class="bank-accounts" th:each="account : ${bankAccounts}"
+                     th:text="${account.accountType}"
+                     th:attr="data-id=${account.id}"
+                     th:onclick="'selectBankAccount(this)'">
+                </div>
+            </div>
+
+            <form id="add-bank-account-form">
+                <h3>Add Bank Account</h3>
+                <label for="accountType">Account Type:</label>
+                <input type="text" id="accountType" name="accountType" required>
+
+                <label for="bankName">Bank Name:</label>
+                <input type="text" id="bankName" name="bankName" required>
+
+                <label for="accountNumber">Account Number:</label>
+                <input type="text" id="accountNumber" name="accountNumber" required>
+
+                <label for="iban">IBAN:</label>
+                <input type="text" id="iban" name="iban" required>
+
+                <label for="bic">BIC:</label>
+                <input type="text" id="bic" name="bic" required>
+
+                <button type="submit">Add Bank Account</button>
+            </form>
+
+            <div id="bank-account-details">
+                <p id="selected-account-type"></p>
+                <p id="selected-bank-name"></p>
+                <p id="selected-account-number"></p>
+                <p id="selected-iban"></p>
+                <p id="selected-bic"></p>
+
+                <form id="transaction-form" style="display: none;">
+                    <h3>Make a Transaction</h3>
+                    <label for="transactionType">Transaction Type:</label>
+                    <select id="transactionType" name="transactionType" required>
+                        <option value="DEPOSIT">Deposit</option>
+                        <option value="WITHDRAWAL">Withdrawal</option>
+                    </select>
+
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" name="amount" required>
+
+                    <input type="checkbox" id="feeCheckbox" name="feeCheckbox" checked>
+                    <label for="feeCheckbox">You pay the fee</label>
+
+                    <button type="submit">Proceed</button>
+                </form>
+
+                <button id="remove-bank-account-btn" style="display: none;">Remove Bank Account</button>
+            </div>
+        </div>
+
     </div>
 
-    <div id="buddies" class="tab-content hidden" style="display: none;">
-        <!-- Contenu de l'onglet Your Buddies -->
-    </div>
-
-    <div id="bank-accounts" class="tab-content hidden" style="display: none;">
-        <!-- Contenu de l'onglet Your Bank Accounts -->
-    </div>
-
+    <script th:src="@{/js/profile-tabs.js}" type="text/javascript"></script>
 </body>
 </html>
 
-<script th:inline="javascript">
-    function toggleEdit(field) {
-        var textElement = document.getElementById(field + "Text");
-        var inputElement = document.getElementById(field + "Input");
-        if (textElement && inputElement) {
-            textElement.style.display = "none";
-            inputElement.style.display = "inline-block";
-            inputElement.value = textElement.innerText;
-        }
-    }
-
-    window.onload = function() {
-        document.getElementById('firstNameInput').style.display = 'none';
-        document.getElementById('lastNameInput').style.display = 'none';
-    };
-
-    var currentTab = 'user-info';
-
-    function showTab(tabName) {
-        if (currentTab !== tabName) {
-            var currentTabContent = document.getElementById(currentTab);
-            if (currentTabContent) {
-                currentTabContent.classList.add('hidden');
-            }
-
-            var selectedTabContent = document.getElementById(tabName);
-            if (selectedTabContent) {
-                setTimeout(function() { selectedTabContent.classList.remove('hidden'); }, 10);
-            }
-
-            currentTab = tabName;
-        }
-    }
-</script>
