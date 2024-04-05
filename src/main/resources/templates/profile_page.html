@@ -15,51 +15,51 @@
         <div th:insert="~{fragments/breadcrumb :: breadcrumb}"></div>
     </div>
 
-    <h1 th:text="'Profile of ' + ${currentUser.firstName} + ' ' + ${currentUser.lastName}"></h1>
-    <div>
-        <p>Your balance: <span th:text="${currentUser.balance}"></span></p>
-    </div>
+    <h1 th:text="${currentUser.firstName} + ' ' + ${currentUser.lastName}"></h1>
 
     <div class="tabs-container">
         <div>
             <ul class="tabs">
-                <li data-tab="user-info"><a href="#user-info" onclick="showTab('user-info')">Your User Account</a></li>
-                <li data-tab="buddies"><a href="#buddies" onclick="showTab('buddies')">Your Buddies</a></li>
-                <li data-tab="bank-accounts"><a href="#bank-accounts" onclick="showTab('bank-accounts')">Your Bank Accounts</a></li>
+                <li class="active" data-tab="user-info"><a href="#user-info" onclick="showTab('user-info')">User Account</a></li>
+                <li data-tab="buddies"><a href="#buddies" onclick="showTab('buddies')">Buddies</a></li>
+                <li data-tab="bank-accounts"><a href="#bank-accounts" onclick="showTab('bank-accounts')">Bank Accounts</a></li>
             </ul>
         </div>
 
         <div id="user-info" class="tab-content">
+            <h3>User Information</h3>
             <form th:action="@{/profile/update-profile}" th:object="${profileUpdateDTO}" method="post">
-                <h2>User Information</h2>
                 <p>First name:
-                    <span id="firstNameText" class="editable-text" th:text="${currentUser.firstName}"></span>
+                    <strong><span id="firstNameText" class="editable-text" th:text="${currentUser.firstName}"></span></strong>
                     <label for="firstNameInput"></label>
                     <input type="text" id="firstNameInput" name="firstNameInput" class="editable-input" th:placeholder="${currentUser.firstName}" style="display:none">
-                    <button type="button" onclick="toggleEdit('firstName')">Edit</button>
+                    <button class="editable-button" type="button" onclick="toggleEdit('firstName')">Edit</button>
                 </p>
                 <p>Last name:
-                    <span id="lastNameText" class="editable-text" th:text="${currentUser.lastName}"></span>
+                    <strong><span id="lastNameText" class="editable-text" th:text="${currentUser.lastName}"></span></strong>
                     <label for="lastNameInput"></label>
                     <input type="text" id="lastNameInput" name="lastNameInput" class="editable-input" th:placeholder="${currentUser.lastName}" style="display:none">
-                    <button type="button" onclick="toggleEdit('lastName')">Edit</button>
+                    <button class="editable-button" type="button" onclick="toggleEdit('lastName')">Edit</button>
                 </p>
-                <p>Email: <span th:text="${currentUser.email}"></span></p>
-                <button type="submit">Save changes</button>
+                <p>Email: <strong><span th:text="${currentUser.email}"></span></strong></p>
+                <button class="submit-button" type="submit">Save changes</button>
             </form>
 
+            <h3>Change Password</h3>
             <form th:action="@{/profile/update-password}" th:object="${passwordUpdateDTO}" method="post">
-                <h2>Change Password</h2>
-                <label for="currentPassword">Current Password:</label>
-                <input type="password" id="currentPassword" name="currentPassword" required>
-
-                <label for="newPassword">New Password:</label>
-                <input type="password" id="newPassword" name="newPassword" required>
-
-                <label for="confirmPassword">Confirm New Password:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" required>
-
-                <button type="submit">Change Password</button>
+                <p class="password-field">
+                    <label for="currentPassword">Current Password:</label>
+                    <input class="input-field" type="password" id="currentPassword" name="currentPassword" required>
+                </p>
+                <p class="password-field">
+                    <label for="newPassword">New Password:</label>
+                    <input class="input-field" type="password" id="newPassword" name="newPassword" required>
+                </p>
+                <p class="password-field">
+                    <label for="confirmPassword">Confirm New Password:</label>
+                    <input class="input-field" type="password" id="confirmPassword" name="confirmPassword" required>
+                </p>
+                <button class="submit-button" type="submit">Change Password</button>
                 <div th:if="${errorMessage}" class="alert-danger" role="alert">
                     <p th:text="${errorMessage}"></p>
                 </div>
@@ -67,28 +67,31 @@
         </div>
 
         <div id="buddies" class="tab-content" style="display: none;">
-            <h2>Your Buddies</h2>
-            <div id="buddies-container" class="scrollable">
-                <div class="buddy" th:each="buddy : ${buddies}"
-                     th:text="${buddy.firstName} + ' ' + ${buddy.lastName}"
-                     th:attr="data-email=${buddy.email}"
-                     th:onclick="'selectBuddy(this)'">
+            <h3>Your Buddies</h3>
+            <div class="buddies-wrapper">
+                <div id="buddies-container" class="scrollable">
+                    <div class="buddy" th:each="buddy : ${buddies}"
+                         th:text="${buddy.firstName} + ' ' + ${buddy.lastName}"
+                         th:attr="data-email=${buddy.email}"
+                         th:onclick="'selectBuddy(this)'">
+                    </div>
+                </div>
+                <div id="buddy-details">
+                    <p id="selected-buddy-name"></p>
+                    <p id="selected-buddy-email"></p>
+                    <form th:action="@{/profile/remove-buddy}" id="remove-buddy-form" method="post" style="display: none;">
+                        <input type="hidden" name="buddyEmail" id="buddy-email-input">
+                        <button  class="submit-button" type="submit">Remove Buddy</button>
+                    </form>
                 </div>
             </div>
 
-            <div id="buddy-details">
-                <p id="selected-buddy-name"></p>
-                <p id="selected-buddy-email"></p>
-                <form th:action="@{/profile/remove-buddy}" id="remove-buddy-form" method="post" style="display: none;">
-                    <input type="hidden" name="buddyEmail" id="buddy-email-input">
-                    <button type="submit">Remove Buddy</button>
-                </form>
-            </div>
-
             <form th:action="@{/profile/add-buddy}" id="add-buddy-form" method="post">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-                <button type="submit">Add Buddy</button>
+                <p class="buddy-email-field">
+                    <label for="email">Email:</label>
+                    <input class="input-field" type="email" id="email" name="email" required>
+                </p>
+                <button class="submit-button" type="submit">Add Buddy</button>
             </form>
         </div>
 
@@ -96,69 +99,74 @@
             <h3>Bank Transaction</h3>
             <div id="bank-transaction-container">
                 <form th:action="@{/profile/bank-transaction}" th:object="${bankTransactionRequestDTO}" method="post">
-                    <label for="bankAccount"></label>
-                    <select id="bankAccount" name="id" required>
-                        <option value="" disabled selected>Select Bank Account</option>
-                        <option th:each="account: ${bankAccounts}"
-                                th:value="${account.id}"
-                                th:text="${account.accountType + ' - ' + account.bankName}">
-                        </option>
-                    </select>
+                    <p class="bank-accounts-fields">
+                        <label for="bankAccount"></label>
+                        <select id="bankAccount" name="id" required>
+                            <option value="" disabled selected>Select Bank Account</option>
+                            <option th:each="account: ${bankAccounts}"
+                                    th:value="${account.id}"
+                                    th:text="${account.accountType + ' - ' + account.bankName}">
+                            </option>
+                        </select>
 
-                    <label for="description">Description:</label>
-                    <input type="text" id="description" name="description">
+                        <label for="description"></label>
+                        <input type="text" id="description" name="description" placeholder="Description">
 
-                    <label for="type">Transaction Type:</label>
-                    <select id="type" name="type" required>
-                        <option value="" disabled selected>Select Transaction Type</option>
-                        <option value="DEPOSIT">Deposit</option>
-                        <option value="WITHDRAWAL">Withdrawal</option>
-                    </select>
+                        <label for="type"></label>
+                        <select id="type" name="type" required>
+                            <option value="" disabled selected>Select Transaction Type</option>
+                            <option value="DEPOSIT">Deposit</option>
+                            <option value="WITHDRAWAL">Withdrawal</option>
+                        </select>
 
-                    <label for="amount">Amount:</label>
-                    <input type="number" id="amount" name="amount" step="0.01" th:min="0" placeholder="0€" required>
+                        <label for="amount">Amount:</label>
+                        <input type="number" id="amount" name="amount" step="0.01" th:min="0" placeholder="0€" required>
 
-                    <label for="feeCheckbox">You pay the fee:</label>
-                    <input type="checkbox", id="feeCheckbox" name="feeCheckbox" checked>
+                        <label for="feeCheckbox">You pay the fee:</label>
+                        <input type="checkbox", id="feeCheckbox" name="feeCheckbox" checked>
+                    </p>
 
-                    <button type="submit">Proceed</button>
+                    <button class="submit-button" type="submit">Proceed</button>
                 </form>
             </div>
             <h3>Add Bank Account</h3>
             <div id="add-bank-container">
                 <form th:action="@{/profile/add-bank-account}" th:object="${bankAccountRegisterDTO}" method="post">
-                    <label for="accountType">Account Type:</label>
-                    <input type="text" id="accountType" name="accountType" required>
+                    <p class="bank-accounts-fields">
+                        <label for="accountType"></label>
+                        <input type="text" id="accountType" name="accountType" placeholder="Account Type" required>
 
-                    <label for="accountNumber">Account Number:</label>
-                    <input type="text" id="accountNumber" name="accountNumber" required>
+                        <label for="accountNumber"></label>
+                        <input type="text" id="accountNumber" name="accountNumber" placeholder="Account Number" required>
 
-                    <label for="iban">IBAN:</label>
-                    <input type="text" id="iban" name="iban" required>
+                        <label for="iban"></label>
+                        <input type="text" id="iban" name="iban" placeholder="IBAN" required>
 
-                    <label for="bic">BIC:</label>
-                    <input type="text" id="bic" name="bic" required>
+                        <label for="bic"></label>
+                        <input type="text" id="bic" name="bic" placeholder="BIC" required>
 
-                    <label for="bankName">Bank Name:</label>
-                    <input type="text" id="bankName" name="bankName" required>
+                        <label for="bankName"></label>
+                        <input type="text" id="bankName" name="bankName" placeholder="Bank Name" required>
+                    </p>
 
-                    <button type="submit">Add Bank Account</button>
+                    <button class="submit-button" type="submit">Add Bank Account</button>
                 </form>
             </div>
             <h3>Remove Bank Account</h3>
             <div id="remove-bank-container">
                 <form th:action="@{/profile/remove-bank-account}" method="post">
-                    <label for="account">Select Bank Account:</label>
-                    <select id="account" name="iban" required>
-                        <option value="" disabled selected>Select Bank Account</option>
-                        <option
-                                th:each="account : ${bankAccounts}"
-                                th:value="${account.iban}"
-                                th:text="${account.accountType + ' - ' + account.bankName}">
-                        </option>
-                    </select>
-
-                    <button type="submit">Remove Bank Account</button>
+                    <p class="remove-bank">
+                        <label for="account"></label>
+                        <select id="account" name="iban" required>
+                            <option value="" disabled selected>Select Bank Account</option>
+                            <option
+                                    th:each="account : ${bankAccounts}"
+                                    th:value="${account.iban}"
+                                    th:text="${account.accountType + ' - ' + account.bankName}">
+                            </option>
+                        </select>
+                        <button class="submit-button" type="submit">Remove Bank Account</button>
+                    </p>
                 </form>
             </div>
         </div>

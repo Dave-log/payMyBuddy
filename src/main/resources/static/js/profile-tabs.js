@@ -23,6 +23,16 @@ window.onload = function() {
 
 function showTab(tabName) {
     if (currentTab !== tabName) {
+        var tabs = document.querySelectorAll('.tabs li');
+        tabs.forEach(tab => {
+            tab.classList.remove('active')
+        });
+
+        var selectedTab = document.querySelector('[data-tab="' + tabName + '"]');
+        if (selectedTab) {
+            selectedTab.classList.add('active');
+        }
+
         var currentTabContent = document.getElementById(currentTab);
         if (currentTabContent) {
             currentTabContent.style.display = 'none';

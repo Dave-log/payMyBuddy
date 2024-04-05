@@ -31,6 +31,7 @@ public class HomeController {
     public String getHomePage(Model model) {
         User currentUser = userService.getCurrentUser();
 
+        model.addAttribute("parentPages", new String[]{""});
         model.addAttribute("currentPage", "home");
         model.addAttribute("firstName", currentUser.getFirstName());
         model.addAttribute("lastName", currentUser.getLastName());

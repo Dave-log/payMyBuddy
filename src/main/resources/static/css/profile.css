@@ -1,45 +1,246 @@
-.tabs-container {
-    display: flex;
-    flex-direction: column;
+h1,
+.current-balance {
+    text-align: center;
+    margin-top: 10px;
 }
 
-.tabs-container .tab-content.active {
-    display: flex;
-    flex: 1;
+hr {
+    margin: -0.5em auto 1em;
+    width: 75%;
+}
 
+.profile-container {
+    margin: 20px auto;
+    max-width: 75%;
+}
+
+.tabs-container {
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .tabs {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 10%;
+    margin: 20px;
+    padding: 0 17% 0 15%;
     list-style: none;
-    padding: 0;
-    margin: 0;
+    width: 100%;
 }
 
 .tabs li {
-    display: inline-block;
+    position: relative;
     padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
+    display: inline-block;
+    color: black;
+    font-size: 1.4em;
+    font-weight: 500;
+}
+
+.tabs a {
+    text-decoration: none;
+}
+
+.tabs li::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: black;
+    transition: .3s;
+}
+
+.tabs li:hover::before {
+    width: 100%;
+}
+
+.tabs li.active::before {
+    width: 100%;
+    background: #007bff;
 }
 
 .tabs li.active {
-    background-color: #ccc;
+    color: #007bff;
+}
+
+.tabs li a {
+    color: inherit;
 }
 
 .tab-content {
+    background: none;
+    width: 40%;
+    margin: 0 auto;
+    padding: 20px;
     transition: opacity 0.3s ease-in-out;
     opacity: 1;
+}
+
+#bank-accounts {
+    width: 75%
+}
+
+.tab-content h3 {
+    text-align: center;
+}
+
+.tab-content p,
+.tab-content label span {
+    margin-left: 5em;
+    margin-bottom: 1em;
+    font-size: 1.1em;
+}
+
+#buddies label {
+    margin-top: 10px;
+    margin-left: 8em;
+    font-size: 1.1em;
+}
+
+.password-field input {
+    float: right;
+    margin-right: 6em;
+    font-size: 1.1em;
+}
+
+.buddy-email-field input {
+    float: right;
+    margin-right: 6em;
+    font-size: 1.1em;
+}
+
+.tab-content .editable-text,
+.tab-content .editable-input,
+.tab-content .submit-button {
+    display: inline-block;
+}
+
+.tab-content .editable-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px;
+    border: 0;
+    border-radius: 0.3em;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.tab-content .editable-text,
+.tab-content .editable-input {
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 0.3em;
+}
+
+.tab-content form {
+    margin-top: 20px;
+    margin-bottom: 1em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    background-color: #f5f5f5;
+}
+
+.tab-content.active {
+    display: flex;
+    flex: 1;
 }
 
 .tab-content.hidden {
     opacity: 0;
 }
 
-#buddies-container,
-#bank-accounts-container {
+.input-field {
+    border: 1px solid #ccc;
+    border-radius: 0.3em;
+}
+
+.submit-button {
+    width : auto;
+    color: white;
+    border-radius : 0.3em;
+    background-color: #3b68d9;
+    margin : 0 auto 0.5em auto;
+    padding: 8px;
+    font-size: 1.4em;
+    border: 0;
+}
+
+.submit-button:hover {
+    background-color: #588aed;
+    cursor: pointer;
+}
+
+.buddies-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#buddies-container {
+    margin: 1em;
     height: 200px;
-    width: 10%;
+    width: 40%;
     overflow-y: auto;
-    border: 1px solid;
+    border: 1px solid #ccc;
+    border-radius: 0.3em;
+    padding: 5px;
+    font-size: 1em;
+}
+
+.buddy:hover {
+    background-color: #3b68d9;
+    color: white;
+}
+
+.buddy {
+    font-size: 1.1em;
+}
+
+#buddy-details form {
+    background-color: white;
+}
+
+#buddy-details button {
+    font-size: 1em;
+    margin-left:7em;
+    background-color: rgb(136, 8, 8);
+}
+
+#buddy-details button:hover {
+    background-color: rgb(171, 35, 35);
+}
+
+#bank-accounts form {
+    display: flex;
+    align-items: center;
+}
+
+select,
+#bank-accounts input {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+}
+
+.bank-accounts-fields select,
+.bank-accounts-fields input{
+    margin-right: 1.5em;
+    padding: 5px;
+}
+
+.remove-bank button {
+    font-size: 1em;
+    margin-left: 1em;
+    background-color: rgb(136, 8, 8);
+}
+
+.remove-bank button:hover {
+    background-color: rgb(171, 35, 35);
 }
