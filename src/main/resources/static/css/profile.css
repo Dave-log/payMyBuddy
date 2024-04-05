@@ -1,5 +1,4 @@
-h1,
-.current-balance {
+h1, .current-balance {
     text-align: center;
     margin-top: 10px;
 }
@@ -20,7 +19,6 @@ hr {
 }
 
 .tabs {
-    position: relative;
     display: flex;
     justify-content: center;
     gap: 10%;
@@ -41,6 +39,7 @@ hr {
 
 .tabs a {
     text-decoration: none;
+    color: inherit;
 }
 
 .tabs li::before {
@@ -54,11 +53,7 @@ hr {
     transition: .3s;
 }
 
-.tabs li:hover::before {
-    width: 100%;
-}
-
-.tabs li.active::before {
+.tabs li:hover::before, .tabs li.active::before {
     width: 100%;
     background: #007bff;
 }
@@ -67,12 +62,7 @@ hr {
     color: #007bff;
 }
 
-.tabs li a {
-    color: inherit;
-}
-
 .tab-content {
-    background: none;
     width: 40%;
     margin: 0 auto;
     padding: 20px;
@@ -81,7 +71,7 @@ hr {
 }
 
 #bank-accounts {
-    width: 75%
+    width: 75%;
 }
 
 .tab-content h3 {
@@ -101,25 +91,20 @@ hr {
     font-size: 1.1em;
 }
 
-.password-field input {
-    float: right;
-    margin-right: 6em;
-    font-size: 1.1em;
-}
-
+.password-field input,
 .buddy-email-field input {
     float: right;
     margin-right: 6em;
     font-size: 1.1em;
 }
 
-.tab-content .editable-text,
-.tab-content .editable-input,
-.tab-content .submit-button {
+.editable-text,
+.editable-input,
+.submit-button {
     display: inline-block;
 }
 
-.tab-content .editable-button {
+.editable-button {
     background-color: #4CAF50;
     color: white;
     padding: 5px;
@@ -129,8 +114,8 @@ hr {
     font-size: 1em;
 }
 
-.tab-content .editable-text,
-.tab-content .editable-input {
+.editable-text,
+.editable-input {
     margin-right: 10px;
     border: 1px solid #ccc;
     border-radius: 0.3em;
