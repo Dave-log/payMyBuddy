@@ -20,18 +20,33 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service class providing user-related operations.
+ */
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    /**
+     * Constructs a new UserService instance with the specified dependencies.
+     *
+     * @param userRepository   the repository for user data access
+     * @param passwordEncoder the password encoder
+     */
     @Autowired
     public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Retrieves the currently authenticated user.
+     *
+     * @return the current user
+     * @throws UserNotFoundException if the user is not authenticated or does not exist
+     */
     public User getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -43,6 +58,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Retrieves a list of buddies for the current user.
+     *
+     * @return the list of buddy DTOs
+     */
     public List<BuddyDTO> getBuddyDTOs() {
         User currentUser = getCurrentUser();
         List<User> buddyList = new ArrayList<>(currentUser.getBuddies());
@@ -53,6 +73,11 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Adds a buddy to the current user's buddy list.
+     *
+     * @param buddyEmail the email of the buddy to add
+     */
     public void addBuddy(String buddyEmail) {
         User currentUser = getCurrentUser();
         User buddyToAdd = getUser(buddyEmail);
@@ -64,6 +89,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Removes a buddy from the current user's buddy list.
+     *
+     * @param buddyEmail the email of the buddy to remove
+     */
     public void removeBuddy(String buddyEmail) {
         User currentUser = getCurrentUser();
         User buddyToRemove = getUser(buddyEmail);
@@ -76,27 +106,57 @@ public class UserService {
         }
     }
 
+    /**
+     * Checks if a given user is a buddy of the current user.
+     *
+     * @param currentUser the current user
+     * @param recipient   the user to check
+     * @return true if the recipient is a buddy of the current user, false otherwise
+     */
     public boolean isRecipientBuddyOfCurrentUser(User currentUser, User recipient) {
         return currentUser.getBuddies().contains(recipient);
     }
 
+    /**
+     * Retrieves a user by their ID.
+     *
+     * @param id the ID of the user to retrieve
+     * @return the user with the specified ID
+     * @throws UserNotFoundException if no user exists with the provided ID
+     */
     public User getUser(long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         return optionalUser
                 .orElseThrow(() -> new UserNotFoundException("User does not exist (id provided: " + id + ")"));
     }
 
+    /**
+     * Retrieves a user by their email.
+     *
+     * @param email the email of the user to retrieve
+     * @return the user with the specified email
+     * @throws UserNotFoundException if no user exists with the provided email
+     */
     public User getUser(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         return optionalUser
                 .orElseThrow(() -> new UserNotFoundException("User does not exist (email provided: " + email + ")"));
     }
 
-
+    /**
+     * Retrieves all users.
+     *
+     * @return an Iterable of all users
+     */
     public Iterable<User> getUsers() {
         return userRepository.findAll();
     }
 
+    /**
+     * Updates the profile of the current user.
+     *
+     * @param profileUpdateDTO the DTO containing the updated profile information
+     */
     public void updateProfile(ProfileUpdateDTO profileUpdateDTO) {
         User currentUser = getCurrentUser();
 
@@ -111,6 +171,13 @@ public class UserService {
         userRepository.save(currentUser);
     }
 
+    /**
+     * Updates the password of the current user.
+     *
+     * @param passwordUpdateDTO the DTO containing the new and current passwords
+     * @throws IllegalArgumentException if the current password is incorrect, the new password is the same as the current password,
+     *                                  or the new password does not match the confirm password
+     */
     public void updatePassword(PasswordUpdateDTO passwordUpdateDTO) {
         User currentUser = getCurrentUser();
 
@@ -133,6 +200,12 @@ public class UserService {
         userRepository.save(currentUser);
     }
 
+    /**
+     * Updates the specified user.
+     *
+     * @param user the user to update
+     * @return the updated user
+     */
     public User update(User user) {
         User userToUpdate = getUser(user.getEmail());
         userToUpdate.setFirstName(user.getFirstName());
@@ -146,6 +219,11 @@ public class UserService {
         return userRepository.save(userToUpdate);
     }
 
+    /**
+     * Deletes a user by their ID.
+     *
+     * @param id the ID of the user to delete
+     */
     public void delete(long id) {
         userRepository.delete(getUser(id));
     }

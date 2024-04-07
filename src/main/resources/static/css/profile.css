@@ -220,6 +220,10 @@ select,
     padding: 5px;
 }
 
+.buddy-email-field .input-field {
+    padding: 5px;
+}
+
 .remove-bank button {
     font-size: 1em;
     margin-left: 1em;

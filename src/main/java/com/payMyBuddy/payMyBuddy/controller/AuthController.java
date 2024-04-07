@@ -3,24 +3,23 @@ package com.payMyBuddy.payMyBuddy.controller;
 import com.payMyBuddy.payMyBuddy.dto.UserRegisterDTO;
 import com.payMyBuddy.payMyBuddy.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-import java.util.Map;
-
+/**
+ * Controller class responsible for handling requests related to authentication and registration.
+ */
 @Controller
 public class AuthController {
 
     private final AuthService authService;
 
+    /**
+     * Constructs a new AuthController instance with the specified AuthService dependency.
+     *
+     * @param authService the service responsible for authentication and registration operations
+     */
     @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;;
@@ -46,6 +45,16 @@ public class AuthController {
         return "registration_page";
     }
 
+    /**
+     * Registers a new user based on the provided user registration data.
+     * If the email is already taken, it adds an error message to the model and returns the registration page.
+     * Otherwise, it registers the user and redirects to the login page with a success message.
+     *
+     * @param userRegisterDTO the DTO containing the user registration data
+     * @param model           the model to which error messages can be added
+     * @return a redirection to the login page with a success message if registration is successful,
+     *         or the registration page with an error message if the email is already taken
+     */
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("registerDTO") UserRegisterDTO userRegisterDTO, Model model) {
         if (authService.existsByEmail(userRegisterDTO.email())) {

@@ -33,6 +33,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Configuration class responsible for configuring Spring Security settings.
+ * It enables web security and defines authentication and authorization configurations.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -40,12 +44,25 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final UserRepository userRepository;
 
+    /**
+     * Constructs a new SecurityConfig instance with the specified dependencies.
+     *
+     * @param customUserDetailsService the custom user details service used for user authentication
+     * @param userRepository          the user repository used for accessing user data
+     */
     @Autowired
     public SecurityConfig(CustomUserDetailsService customUserDetailsService, UserRepository userRepository) {
         this.customUserDetailsService = customUserDetailsService;
         this.userRepository = userRepository;
     }
 
+    /**
+     * Configures the security rules of the application.
+     *
+     * @param http the HttpSecurity object to configure HTTP security
+     * @return the configured security filter chain to handle HTTP requests
+     * @throws Exception if an error occurs while configuring security
+     */
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
@@ -54,9 +71,7 @@ public class SecurityConfig {
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .requestMatchers("/","/login", "/register", "/error").permitAll()
                     .requestMatchers("/home", "/contact", "/profile", "/transfer").hasRole("USER")
-                    .requestMatchers("/user/**").hasRole("USER")
                     .requestMatchers("/profile/**").hasRole("USER")
-                    .requestMatchers("/bank-account/**").hasRole("USER")
                     .requestMatchers("/transactions/**").hasRole("USER")
                     .anyRequest().authenticated())
                 .formLogin(form -> form
@@ -76,11 +91,22 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Creates and returns a BCryptPasswordEncoder instance.
+     *
+     * @return a BCryptPasswordEncoder instance for encoding passwords
+     */
     @Bean
     public BCryptPasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Creates and returns an AuthenticationProvider instance configured with a DaoAuthenticationProvider.
+     * It sets the custom user details service and password encoder for authentication.
+     *
+     * @return an AuthenticationProvider instance configured with a DaoAuthenticationProvider
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -89,19 +115,33 @@ public class SecurityConfig {
         return daoAuthenticationProvider;
     }
 
+    /**
+     * Creates and returns an AuthenticationManager instance using the provided AuthenticationConfiguration.
+     * It retrieves the authentication manager from the configuration.
+     *
+     * @param config the AuthenticationConfiguration used to obtain the AuthenticationManager
+     * @return an AuthenticationManager instance
+     * @throws Exception if an error occurs while retrieving the AuthenticationManager
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return  config.getAuthenticationManager();
     }
 
+    /**
+     * Creates and returns an OAuth2UserService instance.
+     * This method overrides the loadUser method to customize the behavior of loading OAuth2 users.
+     * It loads the user based on the provided OAuth2UserRequest.
+     * If the user exists in the UserRepository, it returns a modified OAuth2User object with user attributes.
+     * If the user does not exist, it returns the original OAuth2User object.
+     *
+     * @return an OAuth2UserService instance
+     */
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService() {
         return new DefaultOAuth2UserService() {
             @Override
             public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-//                Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
-//                DefaultOAuth2UserService defaultService = new DefaultOAuth2UserService();
-//                return defaultService.loadUser(userRequest);
                 OAuth2User user = super.loadUser(userRequest);
                 String email = "";
                 Map<String, Object> userAttributes = user.getAttributes();
@@ -114,7 +154,6 @@ public class SecurityConfig {
 
                 Optional<User> optionalUser = userRepository.findByEmail(email);
                 if (optionalUser.isPresent()) {
-                    User existingUser = optionalUser.get();
                     return new DefaultOAuth2User(user.getAuthorities(), user.getAttributes(), "email");
                 } else {
                     return user;
@@ -123,6 +162,13 @@ public class SecurityConfig {
         };
     }
 
+    /**
+     * Creates and returns a GrantedAuthoritiesMapper instance.
+     * This method defines a mapping function that maps the provided authorities to a set of GrantedAuthority objects.
+     * It checks the type of each authority and creates a corresponding GrantedAuthority object with the appropriate role.
+     *
+     * @return a GrantedAuthoritiesMapper instance
+     */
     private GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
         return (authorities) -> {
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();

@@ -98,7 +98,7 @@
         <div id="bank-accounts" class="tab-content" style="display: none;">
             <h3>Bank Transaction</h3>
             <div id="bank-transaction-container">
-                <form th:action="@{/profile/bank-transaction}" th:object="${bankTransactionRequestDTO}" method="post">
+                <form th:action="@{/transactions/bank-transaction}" th:object="${bankTransactionRequestDTO}" method="post">
                     <p class="bank-accounts-fields">
                         <label for="bankAccount"></label>
                         <select id="bankAccount" name="id" required>
@@ -123,7 +123,7 @@
                         <input type="number" id="amount" name="amount" step="0.01" th:min="0" placeholder="0€" required>
 
                         <label for="feeCheckbox">You pay the fee:</label>
-                        <input type="checkbox", id="feeCheckbox" name="feeCheckbox" checked>
+                        <input type="checkbox", id="feeCheckbox" name="feePaidBySender" checked>
                     </p>
 
                     <button class="submit-button" type="submit">Proceed</button>

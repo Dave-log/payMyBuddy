@@ -1,6 +1,5 @@
 package com.payMyBuddy.payMyBuddy.dto;
 
-import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

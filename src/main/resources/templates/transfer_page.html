@@ -60,7 +60,7 @@
                     <tr th:each="transfer : ${transferPage.content}">
                         <td th:text="${transfer.connection}">Connection</td>
                         <td th:text="${transfer.description}">Description</td>
-                        <td th:text="${transfer.amount}">Amount</td>
+                        <td th:text="${transfer.amount + '€'}">Amount</td>
                     </tr>
                 </table>
             </div>

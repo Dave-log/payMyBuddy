@@ -1,9 +1,15 @@
 .section-title {
     margin-top: 2em;
-    margin-left: 7em;
+    margin-left: 2em;
     padding-bottom: 0.5em;
     text-align: left;
     font-size: 1.2em;
+}
+
+textarea {
+    font-size: 1.1em;
+    border: 1px solid black;
+    border-radius: 0.3em;
 }
 
 .button {

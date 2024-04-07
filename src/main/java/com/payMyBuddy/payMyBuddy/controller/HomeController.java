@@ -14,17 +14,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+/**
+ * Controller class responsible for handling requests related to home, transfer, and contact pages.
+ */
 @Controller
 public class HomeController {
 
     private final UserService userService;
     private final TransactionService transactionService;
 
+    /**
+     * Constructs a new HomeController instance with the specified dependencies.
+     *
+     * @param userService        the service responsible for user-related operations
+     * @param transactionService the service responsible for transaction-related operations
+     */
     public HomeController(UserService userService, TransactionService transactionService) {
         this.userService = userService;
         this.transactionService = transactionService;
     }
 
+    /**
+     * Returns the home page, displaying information about the current user.
+     *
+     * @param model the model to which attributes will be added
+     * @return the home page view
+     */
     @GetMapping("/home")
     public String getHomePage(Model model) {
         User currentUser = userService.getCurrentUser();
@@ -38,6 +53,14 @@ public class HomeController {
         return "home_page";
     }
 
+    /**
+     * Returns the transfer page, displaying a list of buddies and transfer transactions.
+     *
+     * @param model    the model to which attributes will be added
+     * @param page     the page number for pagination
+     * @param pageSize the size of each page for pagination
+     * @return the transfer page view
+     */
     @GetMapping("/transfer")
     public String getTransferPage(
             Model model,
@@ -56,6 +79,12 @@ public class HomeController {
         return "transfer_page";
     }
 
+    /**
+     * Returns the contact page.
+     *
+     * @param model the model to which attributes will be added
+     * @return the contact page view
+     */
     @GetMapping("/contact")
     public String getContactPage(Model model) {
         model.addAttribute("parentPages", new String[]{"home"});
