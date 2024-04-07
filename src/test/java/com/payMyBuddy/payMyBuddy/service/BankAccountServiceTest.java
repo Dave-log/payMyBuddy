@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -82,6 +81,34 @@ public class BankAccountServiceTest {
     }
 
     @Test
+    public void getUserBankAccounts() {
+        // Arrange
+        User user = new User();
+        user.setId(1L);
+        BankAccount bankAccount1 = new BankAccount();
+        bankAccount1.setId(1L);
+        bankAccount1.setUser(user);
+        BankAccount bankAccount2 = new BankAccount();
+        bankAccount2.setId(2L);
+        bankAccount2.setUser(user);
+        List<BankAccount> expectedBankAccounts = new ArrayList<>();
+        expectedBankAccounts.add(bankAccount1);
+        expectedBankAccounts.add(bankAccount2);
+
+        when(bankAccountRepository.findByUser(user)).thenReturn(expectedBankAccounts);
+
+        // Act
+        List<BankAccount> actualBankAccounts = bankAccountService.getUserBankAccounts(user);
+
+        // Assert
+        assertEquals(expectedBankAccounts.size(), actualBankAccounts.size());
+        for (int i = 0; i < expectedBankAccounts.size(); i++) {
+            assertEquals(expectedBankAccounts.get(i).getId(), actualBankAccounts.get(i).getId());
+            assertEquals(expectedBankAccounts.get(i).getUser().getId(), actualBankAccounts.get(i).getUser().getId());
+        }
+    }
+
+    @Test
     public void getBankAccounts() {
         // Arrange
         List<BankAccount> expectedBankAccounts = new ArrayList<>();
@@ -96,6 +123,36 @@ public class BankAccountServiceTest {
 
         // Assert
         assertEquals(expectedBankAccounts, actualBankAccounts);
+    }
+
+    @Test
+    void isBankAccountOwnedByUser() {
+        // Arrange
+        User user = new User();
+        user.setId(1L);
+        BankAccount bankAccount1 = new BankAccount();
+        bankAccount1.setId(1L);
+        bankAccount1.setUser(user);
+        BankAccount bankAccount2 = new BankAccount();
+        bankAccount2.setId(2L);
+        bankAccount2.setUser(user);
+        List<BankAccount> userBankAccounts = new ArrayList<>();
+        userBankAccounts.add(bankAccount1);
+        userBankAccounts.add(bankAccount2);
+
+        when(bankAccountService.getUserBankAccounts(user)).thenReturn(userBankAccounts);
+
+        // Test with a bank account owned by the user
+        BankAccount ownedBankAccount = new BankAccount();
+        ownedBankAccount.setId(1L);
+        ownedBankAccount.setUser(user);
+        assertTrue(bankAccountService.isBankAccountOwnedByUser(user, ownedBankAccount));
+
+        // Test with a bank account not owned by the user
+        BankAccount unownedBankAccount = new BankAccount();
+        unownedBankAccount.setId(3L);
+        unownedBankAccount.setUser(new User());
+        assertFalse(bankAccountService.isBankAccountOwnedByUser(user, unownedBankAccount));
     }
 
     @Test

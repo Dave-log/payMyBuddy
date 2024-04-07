@@ -1,5 +1,8 @@
 package com.payMyBuddy.payMyBuddy.service;
 
+import com.payMyBuddy.payMyBuddy.dto.BuddyDTO;
+import com.payMyBuddy.payMyBuddy.dto.PasswordUpdateDTO;
+import com.payMyBuddy.payMyBuddy.dto.ProfileUpdateDTO;
 import com.payMyBuddy.payMyBuddy.exceptions.BuddyAlreadyInBuddyListException;
 import com.payMyBuddy.payMyBuddy.exceptions.BuddyNotFoundInBuddyListException;
 import com.payMyBuddy.payMyBuddy.exceptions.UserNotFoundException;
@@ -13,11 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -26,6 +27,8 @@ import static org.mockito.Mockito.*;
 public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserService userService;
@@ -76,6 +79,33 @@ public class UserServiceTest {
 
         // Act & Assert
         assertThrows(UserNotFoundException.class, () -> userService.getCurrentUser());
+    }
+
+    @Test
+    public void getBuddyDTOs() {
+        // Arrange
+        User currentUser = new User();
+        currentUser.setEmail("johndoe@example.com");
+        when(userRepository.findByEmail(currentUser.getEmail())).thenReturn(Optional.of(currentUser));
+
+        Authentication auth = mock(Authentication.class);
+        when(auth.isAuthenticated()).thenReturn(true);
+        when(auth.getName()).thenReturn("johndoe@example.com");
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(securityContext);
+
+        Set<User> buddies = new HashSet<>();
+        buddies.add(new User());
+        currentUser.setBuddies(buddies);
+
+        // Act
+        List<BuddyDTO> result = userService.getBuddyDTOs();
+
+        // Assert
+        assertEquals(buddies.size(), result.size());
+
     }
 
     @Test
@@ -184,6 +214,20 @@ public class UserServiceTest {
     }
 
     @Test
+    public void testIsRecipientBuddyOfCurrentUser() {
+        // Arrange
+        User currentUser = new User();
+        User recipient = new User();
+        currentUser.getBuddies().add(recipient);
+
+        // Act
+        boolean result = userService.isRecipientBuddyOfCurrentUser(currentUser, recipient);
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
     public void getUser_UserExists() {
         long id = 1L;
         User user = new User();
@@ -234,14 +278,177 @@ public class UserServiceTest {
     }
 
     @Test
+    public void testUpdatePassword_CorrectCurrentPassword() {
+        // Arrange
+        PasswordUpdateDTO passwordUpdateDTO = new PasswordUpdateDTO("old", "new", "new");
+
+        User currentUser = new User();
+        currentUser.setEmail("johndoe@example.com");
+        currentUser.setPassword(passwordEncoder.encode("old"));
+
+        Authentication auth = mock(Authentication.class);
+        when(auth.isAuthenticated()).thenReturn(true);
+        when(auth.getName()).thenReturn("johndoe@example.com");
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByEmail(currentUser.getEmail())).thenReturn(Optional.of(currentUser));
+        when(passwordEncoder.matches(passwordUpdateDTO.currentPassword(), currentUser.getPassword())).thenReturn(true);
+        when(passwordEncoder.matches(passwordUpdateDTO.newPassword(), currentUser.getPassword())).thenReturn(false);
+
+        // Act
+        userService.updatePassword(passwordUpdateDTO);
+
+        // Assert
+        verify(passwordEncoder, times(1)).encode(passwordUpdateDTO.newPassword());
+        assertNotEquals("old", currentUser.getPassword());
+    }
+
+    @Test
+    public void testUpdatePassword_IncorrectCurrentPassword() {
+        // Arrange
+        PasswordUpdateDTO passwordUpdateDTO = new PasswordUpdateDTO("wrongPassword", "new", "new");
+
+        User currentUser = new User();
+        currentUser.setEmail("johndoe@example.com");
+        currentUser.setPassword(passwordEncoder.encode("old"));
+
+        Authentication auth = mock(Authentication.class);
+        when(auth.isAuthenticated()).thenReturn(true);
+        when(auth.getName()).thenReturn("johndoe@example.com");
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByEmail(currentUser.getEmail())).thenReturn(Optional.of(currentUser));
+        when(passwordEncoder.matches(passwordUpdateDTO.currentPassword(), currentUser.getPassword())).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            userService.updatePassword(passwordUpdateDTO);
+        });
+    }
+
+    @Test
+    public void testUpdatePassword_NewPasswordSameAsCurrent() {
+        // Arrange
+        PasswordUpdateDTO passwordUpdateDTO = new PasswordUpdateDTO("old", "old", "old");
+
+        User currentUser = new User();
+        currentUser.setEmail("johndoe@example.com");
+        currentUser.setPassword(passwordEncoder.encode("old"));
+
+        Authentication auth = mock(Authentication.class);
+        when(auth.isAuthenticated()).thenReturn(true);
+        when(auth.getName()).thenReturn("johndoe@example.com");
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByEmail(currentUser.getEmail())).thenReturn(Optional.of(currentUser));
+        when(passwordEncoder.matches(passwordUpdateDTO.currentPassword(), currentUser.getPassword())).thenReturn(true);
+        when(passwordEncoder.matches(passwordUpdateDTO.newPassword(), currentUser.getPassword())).thenReturn(true);
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            userService.updatePassword(passwordUpdateDTO);
+        });
+    }
+
+    @Test
+    public void testUpdatePassword_NewPasswordAndConfirmPasswordMismatch() {
+        // Arrange
+        PasswordUpdateDTO passwordUpdateDTO = new PasswordUpdateDTO("old", "newPassword", "differentPassword");
+
+        User currentUser = new User();
+        currentUser.setEmail("johndoe@example.com");
+        currentUser.setPassword(passwordEncoder.encode("old"));
+
+        Authentication auth = mock(Authentication.class);
+        when(auth.isAuthenticated()).thenReturn(true);
+        when(auth.getName()).thenReturn("johndoe@example.com");
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByEmail(currentUser.getEmail())).thenReturn(Optional.of(currentUser));
+        when(passwordEncoder.matches(passwordUpdateDTO.currentPassword(), currentUser.getPassword())).thenReturn(true);
+        when(passwordEncoder.matches(passwordUpdateDTO.newPassword(), currentUser.getPassword())).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            userService.updatePassword(passwordUpdateDTO);
+        });
+    }
+
+    @Test
+    public void testUpdateProfile_FirstNameNotEmpty() {
+        // Arrange
+        ProfileUpdateDTO profileUpdateDTO = new ProfileUpdateDTO("John", "");
+
+        User currentUser = new User();
+        currentUser.setEmail("johndoe@example.com");
+        when(userRepository.findByEmail(currentUser.getEmail())).thenReturn(Optional.of(currentUser));
+
+        Authentication auth = mock(Authentication.class);
+        when(auth.isAuthenticated()).thenReturn(true);
+        when(auth.getName()).thenReturn("johndoe@example.com");
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByEmail(currentUser.getEmail())).thenReturn(Optional.of(currentUser));
+
+        // Act
+        userService.updateProfile(profileUpdateDTO);
+
+        // Assert
+        assertEquals("John", currentUser.getFirstName());
+    }
+
+    @Test
+    public void testUpdateProfile_LastNameNotEmpty() {
+        // Arrange
+        ProfileUpdateDTO profileUpdateDTO = new ProfileUpdateDTO("", "Doe");
+
+        User currentUser = new User();
+        currentUser.setEmail("johndoe@example.com");
+        when(userRepository.findByEmail(currentUser.getEmail())).thenReturn(Optional.of(currentUser));
+
+        Authentication auth = mock(Authentication.class);
+        when(auth.isAuthenticated()).thenReturn(true);
+        when(auth.getName()).thenReturn("johndoe@example.com");
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByEmail(currentUser.getEmail())).thenReturn(Optional.of(currentUser));
+
+        // Act
+        userService.updateProfile(profileUpdateDTO);
+
+        // Assert
+        assertEquals("Doe", currentUser.getLastName());
+    }
+
+    @Test
     public void update_ValidUser() {
         // Arrange
         User userToUpdate = new User();
         userToUpdate.setEmail("johndoe@example.com");
+        userToUpdate.setPassword("0000");
 
         User updatedUser = new User();
         updatedUser.setEmail("janedoe@example.com");
 
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(userRepository.findByEmail(userToUpdate.getEmail())).thenReturn(Optional.of(userToUpdate));
         when(userRepository.save(userToUpdate)).thenReturn(updatedUser);
 

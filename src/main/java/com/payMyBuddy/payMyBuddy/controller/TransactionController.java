@@ -28,20 +28,6 @@ public class TransactionController {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity<?> getTransaction(@PathVariable long id) {
-        try {
-            return ResponseEntity.ok(transactionService.getTransaction(id));
-        } catch (TransactionNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/all")
-    @ResponseBody
-    public Iterable<Transaction> getTransactions() { return transactionService.getTransactions(); }
-
     @PostMapping("/buddy-transaction")
     public String transfer(@ModelAttribute("postTransaction") BuddyTransactionRequestDTO buddyTransactionRequestDTO, Model model) {
         User currentUser = userService.getCurrentUser();
@@ -56,27 +42,5 @@ public class TransactionController {
             System.out.println("error : "+e.getMessage());
             return "redirect:/error";
         }
-    }
-
-    @PostMapping("/bank-transaction")
-    public ResponseEntity<String> makeBankTransaction(@RequestBody BankTransactionRequestDTO bankTransactionRequestDTO) {
-        try {
-            transactionService.makeBankTransaction(bankTransactionRequestDTO);
-            return ResponseEntity.ok("Bank transaction successful");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity<String> deleteTransaction(@PathVariable long id) {
-        try {
-            transactionService.deleteTransaction(id);
-            return ResponseEntity.ok("Transaction deleted successfully");
-        } catch (TransactionNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
     }
 }

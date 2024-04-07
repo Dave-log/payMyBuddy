@@ -7,7 +7,6 @@ import com.payMyBuddy.payMyBuddy.service.TransactionService;
 import com.payMyBuddy.payMyBuddy.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +17,6 @@ import java.util.List;
 @Controller
 public class HomeController {
 
-    private BCryptPasswordEncoder passwordEncoder;
     private final UserService userService;
     private final TransactionService transactionService;
 

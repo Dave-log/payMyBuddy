@@ -11,7 +11,6 @@ import com.payMyBuddy.payMyBuddy.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -63,10 +62,6 @@ public class TransactionService {
 
         if (!userService.isRecipientBuddyOfCurrentUser(currentUser, recipientUser)) {
             throw new InvalidTransactionException("Recipient user is not your buddy");
-        }
-
-        if (isNotPositiveAmount(buddyTransactionRequestDTO.amount())) {
-            throw new InvalidTransactionException("Amount must be strictly positive");
         }
 
         BuddyTransaction buddyTransaction = new BuddyTransaction();
@@ -138,9 +133,5 @@ public class TransactionService {
     public void deleteTransaction(long id) {
         Transaction transaction = getTransaction(id);
         transactionRepository.delete(transaction);
-    }
-
-    private boolean isNotPositiveAmount(BigDecimal amount) {
-        return amount.signum() <= 0;
     }
 }

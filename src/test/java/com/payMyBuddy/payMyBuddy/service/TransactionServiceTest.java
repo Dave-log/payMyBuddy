@@ -2,6 +2,7 @@ package com.payMyBuddy.payMyBuddy.service;
 
 import com.payMyBuddy.payMyBuddy.dto.BankTransactionRequestDTO;
 import com.payMyBuddy.payMyBuddy.dto.BuddyTransactionRequestDTO;
+import com.payMyBuddy.payMyBuddy.dto.TransferDTO;
 import com.payMyBuddy.payMyBuddy.enums.TransactionType;
 import com.payMyBuddy.payMyBuddy.exceptions.InvalidTransactionException;
 import com.payMyBuddy.payMyBuddy.exceptions.TransactionNotFoundException;
@@ -12,6 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -38,6 +43,35 @@ public class TransactionServiceTest {
 
     @InjectMocks
     private TransactionService transactionService;
+
+    @Test
+    void testGetTransferDTOs() {
+        // Arrange
+        User currentUser = new User();
+        currentUser.setId(1L);
+        when(userService.getCurrentUser()).thenReturn(currentUser);
+
+        User recipient = new User();
+        recipient.setFirstName("John");
+        recipient.setLastName("Doe");
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.add(createTransaction("Transaction 1", BigDecimal.valueOf(50)));
+        transactions.add(createTransaction("Transaction 2", BigDecimal.valueOf(100)));
+
+        Page<Transaction> page = new PageImpl<>(transactions, pageable, transactions.size());
+        when(transactionRepository.findBySenderAndType(currentUser, TransactionType.TRANSFER, pageable)).thenReturn(page);
+        when(userService.getUser(anyLong())).thenReturn(recipient);
+
+        // Act
+        Page<TransferDTO> transferDTOPage = transactionService.getTransferDTOs(pageable);
+
+        // Assert
+        assertEquals(2, transferDTOPage.getContent().size());
+        // You can add more assertions to verify the content of each TransferDTO if needed
+    }
 
     @Test
     public void transfer_ValidTransaction() {
@@ -297,6 +331,23 @@ public class TransactionServiceTest {
     }
 
     @Test
+    public void testGetUserTransactions() {
+        // Arrange
+        User currentUser = new User();
+        List<Transaction> transactions = new ArrayList<>();
+
+        transactions.add(new BankTransaction());
+
+        when(transactionRepository.findBySender(currentUser)).thenReturn(transactions);
+
+        // Act
+        List<Transaction> result = transactionService.getUserTransactions(currentUser);
+
+        // Assert
+        assertEquals(transactions, result);
+    }
+
+    @Test
     public void getTransactions_Successful() {
         // Arrange
         List<Transaction> expectedTransactions = new ArrayList<>();
@@ -343,5 +394,21 @@ public class TransactionServiceTest {
         assertThrows(TransactionNotFoundException.class, () -> transactionService.deleteTransaction(id));
 
         verify(transactionRepository, never()).delete(any());
+    }
+
+    private BuddyTransaction createTransaction(String description, BigDecimal amount) {
+        BuddyTransaction transaction = new BuddyTransaction();
+        User sender = new User();
+        sender.setId(1L);
+        User recipient = new User();
+        recipient.setId(2L);
+        recipient.setFirstName("John");
+        recipient.setLastName("Doe");
+        transaction.setSender(sender);
+        transaction.setRecipientUser(recipient);
+        transaction.setDescription(description);
+        transaction.setAmount(amount);
+        transaction.setType(TransactionType.TRANSFER);
+        return transaction;
     }
 }

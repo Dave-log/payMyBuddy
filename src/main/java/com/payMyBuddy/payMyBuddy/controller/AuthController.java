@@ -3,9 +3,18 @@ package com.payMyBuddy.payMyBuddy.controller;
 import com.payMyBuddy.payMyBuddy.dto.UserRegisterDTO;
 import com.payMyBuddy.payMyBuddy.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.Map;
 
 @Controller
 public class AuthController {
@@ -14,7 +23,7 @@ public class AuthController {
 
     @Autowired
     public AuthController(AuthService authService) {
-        this.authService = authService;
+        this.authService = authService;;
     }
 
     @GetMapping("/")

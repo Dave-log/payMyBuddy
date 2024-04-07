@@ -48,15 +48,3 @@ input[type=checkbox] {
 form {
     margin-bottom: -5%;
 }
-
-.oauth {
-    margin: 0.5em;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.oauth a {
-    margin-bottom: 0.1em;
-}
-.oauth:hover {
-    color: #af27e7
-}
