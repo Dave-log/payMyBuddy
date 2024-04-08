@@ -28,7 +28,7 @@ One the database is set up, you can run the application.
 
 ## Configuration
 
-You need to have JDK 21 or later installed on your system.
+You need to have **JDK 21** or later installed on your system.
 
 ## Usage
 
@@ -37,17 +37,17 @@ One the application is launched, simply enter the following URL in a web browser
 Upon reaching the login page, if you don't have an account, you can register by clicking on "register here". After creating your user account, log in to access the application's features.
 
 In the navigation bar:
-- Transfer Page: Allows you to send money to a buddy and view all transactions.
-- Profile Page: Contains 3 tabs: user information, buddies management and bank accounts management.
-- Contact Page: Allows you to send a message to the administrators.
+- **Transfer Page**: Allows you to send money to a buddy and view all transactions.
+- **Profile Page**: Contains 3 tabs: user information, buddies management and bank accounts management.
+- **Contact Page**: Allows you to send a message to the administrators.
 
 Additionally, you can log out at any time.
 
 ## Documentation
 
-- Logical Data Model:
+- **Logical Data Model**: <br>
 ![](public/ldm.png)
 <br><br>
-- Physical Data Model:
+- **Physical Data Model**: <br>
 ![](public/mpd.png)
 
