@@ -2,6 +2,9 @@ package com.payMyBuddy.payMyBuddy.controller;
 
 import com.payMyBuddy.payMyBuddy.dto.UserRegisterDTO;
 import com.payMyBuddy.payMyBuddy.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -65,5 +68,15 @@ public class AuthController {
         authService.register(userRegisterDTO);
 
         return "redirect:login?success=true";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return "redirect:/login";
     }
 }

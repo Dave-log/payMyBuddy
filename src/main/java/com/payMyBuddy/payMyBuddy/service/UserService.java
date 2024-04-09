@@ -211,7 +211,7 @@ public class UserService {
         userToUpdate.setFirstName(user.getFirstName());
         userToUpdate.setLastName(user.getLastName());
         userToUpdate.setEmail(user.getEmail());
-        userToUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
+        userToUpdate.setPassword(user.getPassword());
         userToUpdate.setRole(user.getRole());
         userToUpdate.setBalance(user.getBalance());
         userToUpdate.setBuddies(user.getBuddies());

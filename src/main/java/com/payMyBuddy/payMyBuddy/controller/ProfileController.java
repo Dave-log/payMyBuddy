@@ -46,7 +46,7 @@ public class ProfileController {
     public String getProfilePage(Model model) {
         User currentUser = userService.getCurrentUser();
         List<BuddyDTO> buddies = userService.getBuddyDTOs();
-        List<BankAccount> bankAccounts = bankAccountService.getBankAccounts();
+        List<BankAccount> bankAccounts = bankAccountService.getUserBankAccounts(currentUser);
 
         model.addAttribute("parentPages", new String[]{"home"});
         model.addAttribute("currentPage", "profile");
