@@ -12,7 +12,7 @@ Pay My Buddy aims to streamline this process by providing users with a user-frie
 
 - New users can register and login using **email** as unique identifier.
 - Users can add registered people to their *buddy* list using their email addresses.
-- At any time, users can **deposit** money into their bank accounts or **withdraw** money from them withing our application.
+- At any time, users can **deposit** money into their bank accounts or **withdraw** money from them within our application.
 - Using the available balance, users can make payments to any *buddy*.
 - We charge a 0.5% fee for each transaction to monetize the application.
 
