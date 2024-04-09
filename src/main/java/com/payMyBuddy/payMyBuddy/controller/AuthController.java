@@ -70,6 +70,13 @@ public class AuthController {
         return "redirect:login?success=true";
     }
 
+    /**
+     * Handles the logout functionality by invalidating the current session.
+     * After invalidating the session, redirects the user to the login page.
+     *
+     * @param request the HttpServletRequest object containing the current request
+     * @return a redirection string to the login page
+     */
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -77,6 +84,6 @@ public class AuthController {
             session.invalidate();
         }
 
-        return "redirect:/login";
+        return "redirect:login";
     }
 }

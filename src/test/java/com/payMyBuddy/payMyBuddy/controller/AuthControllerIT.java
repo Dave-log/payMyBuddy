@@ -48,10 +48,10 @@ public class AuthControllerIT {
     @Test
     public void testRegisterUser_Valid() throws Exception {
         mockMvc.perform(post("/register")
-                        .param("firstName", "John")
-                        .param("lastName", "Doe")
+                        .param("firstName", "Test")
+                        .param("lastName", "Test")
                         .param("email", "test@example.com")
-                        .param("password", "password123"))
+                        .param("password", "test"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("login?success=true"));
     }
@@ -65,5 +65,12 @@ public class AuthControllerIT {
                         .param("password", "0000"))
                 .andExpect(view().name("registration_page"))
                 .andExpect(model().attributeExists("registerError"));
+    }
+
+    @Test
+    public void testLogout() throws Exception {
+        mockMvc.perform(get("/logout"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
     }
 }
